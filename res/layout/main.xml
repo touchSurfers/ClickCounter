@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#b4b4b4"
+    >
+    
+<TextView  
+	android:id="@+id/counter_view"
+    android:text="0000"
+    android:textSize="40dip"
+    android:textColor="#FFFFFF" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_marginLeft="50dip" android:layout_marginRight="50dip" android:layout_marginTop="50dip"/>
+
+<Button android:layout_margin="10dip" android:text="Chick +" android:id="@+id/chick_plus" android:layout_height="wrap_content" android:layout_width="wrap_content"></Button>
+
+<Button android:layout_margin="0dip" android:text="list" android:id="@+id/chick_list" android:layout_height="wrap_content" android:layout_width="wrap_content"></Button>
+
+<Button android:layout_margin="0dip" android:text="notes" android:id="@+id/chick_notes" android:layout_height="wrap_content" android:layout_width="wrap_content"></Button>
+
+<com.UI.SliderUI
+       android:id="@+id/single_spinner"
+       android:layout_width="50dip"
+       android:layout_height="150dip"
+       />
+
+
+</LinearLayout>
