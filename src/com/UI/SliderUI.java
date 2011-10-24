@@ -22,6 +22,9 @@ public class SliderUI extends View {
 	 * @param context
 	 */
 	private SliderButton_button slider_button ; 
+	// Listeners
+	protected OnColorChangedListener mOnColorChangedListener;
+
 	
 	int BordersWidth = 0;
 	int BordersHeigth = 0;
@@ -32,6 +35,19 @@ public class SliderUI extends View {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
+	
+
+	public interface OnColorChangedListener {
+	 void onResetHit(View v);
+	}
+	
+	public void setOnColorChangedListener(OnColorChangedListener l) {
+		
+		 this.mOnColorChangedListener = l;
+		
+	}
+
+
 
 	/**
 	 * @param context
@@ -66,6 +82,7 @@ public class SliderUI extends View {
 	    canvas.drawBitmap(slider_button.getBitmap(), 0, slider_button .getY(), null);
 
 	    if(movecon == false){
+	    	/*
 	    		int forY = slider_button.getY();
 	    			for(int i = forY;i>0;i--){
 	    				
@@ -75,6 +92,13 @@ public class SliderUI extends View {
 	    				invalidate();
 	    			}
 	    		slider_button.setY(0);
+	    		*/
+	    	if(slider_button.getY()>0){
+	    		slider_button.setY(slider_button.getY()-5);
+	    		canvas.drawBitmap(slider_button.getBitmap(), 0, slider_button .getY(), null);
+	    		invalidate();
+	    	}
+	    	
 	    }
     	
 	    // TODO draw stuff
@@ -121,8 +145,14 @@ public class SliderUI extends View {
         case MotionEvent.ACTION_MOVE:   // touch drag with the ball
 
         	if(movecon){
-        	slider_button.setX(X-25);
-        	slider_button.setY(Y-25);
+        		if(slider_button.getY()>=slider_button.MAXIMUM){
+        			//reset counter
+        			resetCounter();
+        			movecon = false;
+        			break;
+        		}
+        			
+        		slider_button.setY(Y-25);
         	}
         	
             break; 
@@ -139,5 +169,14 @@ public class SliderUI extends View {
         return true; 
 	
     }
+    
+void resetCounter(){
+	if (this.mOnColorChangedListener != null) {
+		
+		  this.mOnColorChangedListener.onResetHit(this);
+		
+	}
+
+}
 	
 }

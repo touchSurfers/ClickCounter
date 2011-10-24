@@ -98,7 +98,8 @@ public class history extends Activity {
 		        	
 		        	mTabHost.setCurrentTab(3);   
 		        	Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
-
+		        	sharing_class.setPeriod(4);
+		        	adapter.RefreshRow();
 		        } 
 		    });
 	        

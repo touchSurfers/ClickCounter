@@ -34,7 +34,7 @@ public class notes extends Activity {
 	 ImageView  photo2;
 	 ImageView  photo3;
 	 Button camera;
-	 Button save;
+	 
 	 String actual_id;
 	 user_item click;
 	 String new_name;
@@ -58,7 +58,6 @@ public class notes extends Activity {
        ratingBar = (RatingBar)findViewById(R.id.ratingBar);
        
        camera = (Button) findViewById(R.id.camera_button);
-       save = (Button) findViewById(R.id.save_button);
        sharing_class = ((share_class)getApplicationContext());
        
        //GET ID
@@ -89,16 +88,7 @@ public class notes extends Activity {
        });
        
      //START CAMERA button listener
-       save.setOnClickListener(new View.OnClickListener() {  
-           public void onClick(View v) {  
-          	 
-        	   save_notes();
-        	          	
-           }  
-       });
-
-       
-       
+  
        photo1.setOnClickListener(new View.OnClickListener() {  
            public void onClick(View v) {  
           	 

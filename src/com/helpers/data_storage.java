@@ -30,6 +30,7 @@ public class data_storage {
 
     private static final String SELECT_CLICKS = "SELECT * FROM " + CLICK_TABLE + " WHERE CLICK_TIMESTAMP > ";
     private static final String SELECT_ALL_CLICKS = "SELECT * FROM " + CLICK_TABLE;
+    private static final String SELECT_TOP_CLICKS = "SELECT * FROM " + CLICK_TABLE;
     
     public  data_storage(Context context) {
         dbHelper = new data_helper(context, CLICK_TABLE, CLICK_ID + " TEXT,"  + CLICK_NOTES + " TEXT," + CLICK_PHOTO1 + " TEXT," + CLICK_PHOTO2 + " TEXT," + CLICK_PHOTO3 + " TEXT,"  + CLICK_RATING + " TEXT,"  + CLICK_ADDRESS + " TEXT," + CLICK_DATE + " TEXT,"  + CLICK_LAT + " TEXT," + CLICK_LONG + " TEXT," + CLICK_TIMESTAMP + " TEXT");
@@ -106,6 +107,9 @@ public class data_storage {
         else if(period == 3){
         	 query = SELECT_ALL_CLICKS;
         }
+        else if(period == 4){
+       	 query = SELECT_TOP_CLICKS;
+       }
         
         Cursor crsr = sqliteDB.rawQuery(query, null);
 

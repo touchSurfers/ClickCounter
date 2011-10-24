@@ -14,7 +14,7 @@ public class SliderButton_button {
 
 	 private boolean goRight = true;
 	 private boolean goDown = true;
-	 
+	 public int MAXIMUM = 100;
 		public SliderButton_button(Context context, int drawable) {
 
 			BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -48,7 +48,7 @@ public class SliderButton_button {
 			if(newValue > 0){
 	        coordY = newValue;
 			}else{
-				coordY = 0;	
+				 coordY = 0;	
 			}
 	   }
 		

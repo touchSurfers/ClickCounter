@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
-    <string name="hello">Hello World, dashboard!</string>
-    <string name="app_name">Chick Counter</string>
+    <string name="welcome">Welcome to the Sample store!</string>
+    <string name="app_name">ChickCounter</string>
 </resources>

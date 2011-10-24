@@ -14,6 +14,7 @@ public class dashboard extends Activity {
    		Button chickPlus;
    		Button chickList;
    		Button chickNotes;
+   		com.UI.SliderUI slider_button;
    		
    		
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 145584;
@@ -29,16 +30,31 @@ public class dashboard extends Activity {
     	chickPlus = (Button) findViewById(R.id.chick_plus);
     	chickList = (Button) findViewById(R.id.chick_list);
     	chickNotes = (Button) findViewById(R.id.chick_notes);
+    	slider_button = (com.UI.SliderUI) findViewById(R.id.slider_button);
+    	
     	
         sharing_class = ((share_class)getApplicationContext());
         
-        ResetCounter();
-        sharing_class.DeleteDB();
+       // ResetCounter();
+       // sharing_class.DeleteDB();
         
         InitCounter();
         if(sharing_class.getChickCount() < 1){
         	chickNotes.setEnabled(false);
         }
+        
+        //slider_button
+
+       
+        slider_button.setOnColorChangedListener(new com.UI.SliderUI.OnColorChangedListener() {
+
+         @Override
+           public void onResetHit(View v) {
+        	    ResetCounter();
+                sharing_class.DeleteDB();
+           }
+        });
+
         
         chickPlus.setOnClickListener(new View.OnClickListener() {  
             public void onClick(View v) {  
@@ -54,11 +70,9 @@ public class dashboard extends Activity {
            	  
             	//TODO
             	
-            
-            	//threading
             	//try catch
 
-            	//Intergrace PayPal API
+            	//In app payment doresit
             	//Filtr funkci podle stavu zaplaceni app
             	
             	//style
@@ -110,6 +124,9 @@ public class dashboard extends Activity {
     	sharing_class.setChickCount(0);
     	sharing_class.setChickID("");
     	InitCounter();
+    	if(sharing_class.getChickCount() < 1){
+        	chickNotes.setEnabled(false);
+        }
     }
     
     public void InitCounter(){
