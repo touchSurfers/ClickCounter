@@ -62,7 +62,7 @@ public class SliderUI extends View {
         point1.x = 0;
         point1.y = 0;
         
-		slider_button = new SliderButton_button(context,R.drawable.bol_groen, point1);
+		slider_button = new SliderButton_button(context,R.drawable.front_reset_button, point1);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class SliderUI extends View {
 	{
 	    super.onDraw(canvas);
 	    
-	    canvas.drawBitmap(slider_button.getBitmap(), 0, slider_button .getY(), null);
+	    
 
 	    if(movecon == false){
 	    	/*
@@ -100,6 +100,8 @@ public class SliderUI extends View {
 	    	}
 	    	
 	    }
+	    
+	    canvas.drawBitmap(slider_button.getBitmap(), 0, slider_button.getY(), null);
     	
 	    // TODO draw stuff
 	}
@@ -111,6 +113,12 @@ public class SliderUI extends View {
 	    
 	    BordersWidth = widthMeasureSpec;
 		BordersHeigth = heightMeasureSpec;
+		
+		int _height = View.MeasureSpec.getSize(heightMeasureSpec);
+	    int _width = View.MeasureSpec.getSize(widthMeasureSpec);
+	 
+	    setMeasuredDimension(_width, _height);
+	    BordersHeigth = _height;
 	    // MAKE SURE you call super.onMeasure(int, int) here!!!
 	    // At least until we implement our own measuring logic
 	}
@@ -145,17 +153,21 @@ public class SliderUI extends View {
         case MotionEvent.ACTION_MOVE:   // touch drag with the ball
 
         	if(movecon){
-        		if(slider_button.getY()>=slider_button.MAXIMUM){
+        		
+        		if(slider_button.getY()> BordersHeigth-70){
         			//reset counter
-        			resetCounter();
+        			 BordersHeigth =  BordersHeigth;
+        			int Y2 = slider_button.getY();
         			movecon = false;
+        			resetCounter();
         			break;
         		}
-        			
-        		slider_button.setY(Y-25);
+        		slider_button.setY(Y-20);
         	}
         	
             break; 
+            
+         
 
         case MotionEvent.ACTION_UP: 
        		// touch drop - just do things here after dropping

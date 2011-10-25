@@ -14,14 +14,12 @@ public class SliderButton_button {
 
 	 private boolean goRight = true;
 	 private boolean goDown = true;
-	 public int MAXIMUM = 100;
+	 public int MAXIMUM = 50;
 		public SliderButton_button(Context context, int drawable) {
 
 			BitmapFactory.Options opts = new BitmapFactory.Options();
 	        opts.inJustDecodeBounds = true;
 	        img = BitmapFactory.decodeResource(context.getResources(), drawable); 
-	       
-
 		}
 		
 		public SliderButton_button(Context context, int drawable, Point point) {
