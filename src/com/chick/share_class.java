@@ -39,6 +39,7 @@ public class share_class extends Application {
 	private String actual_selected = "";
 	private Thread ControlThread;
 	
+	private String notes_added = "";
 	private LinkedList<String> photo_cache=new LinkedList<String>();
 	
 	//tools
@@ -148,6 +149,15 @@ public class share_class extends Application {
 	  public int countPhotoCache(){
 		  return photo_cache.size();
 	  }
+	  
+	  public void SetNote(String note){
+			 notes_added = note;
+      }
+		  
+		  public String GetNote(){
+			  return notes_added;
+      }
+		  
 	  
 	  public void addPhotoCache(String s){
 		

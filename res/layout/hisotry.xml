@@ -6,6 +6,11 @@
     android:background="#000"
     >
 
+ <View android:id="@+id/view_action"
+		android:layout_width="fill_parent" 
+		android:layout_height="51dip"
+		android:background="@drawable/list_actionbar" />
+		
    <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@android:id/tabhost" android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
@@ -24,7 +29,8 @@
 			        android:id="@+id/list"
 			        android:layout_width="fill_parent"
 			        android:layout_height="fill_parent" 
-			        android:layout_weight="1"/>
+			        android:layout_weight="1"
+			         android:background="#202020"/>
 			</FrameLayout>
 		</LinearLayout>
 	</TabHost>

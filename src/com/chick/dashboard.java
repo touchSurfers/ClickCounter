@@ -5,15 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class dashboard extends Activity {
 	
 	share_class sharing_class;
 	    TextView counter;
-   		Button chickPlus;
-   		Button chickList;
-   		Button chickNotes;
+   		ImageButton chickPlus;
+   		ImageButton chickList;
+   		ImageButton chickNotes;
    		com.UI.SliderUI slider_button;
    		
    		
@@ -27,9 +28,9 @@ public class dashboard extends Activity {
         
         
         counter = (TextView) findViewById(R.id.counter_view);
-    	chickPlus = (Button) findViewById(R.id.chick_plus);
-    	chickList = (Button) findViewById(R.id.chick_list);
-    	chickNotes = (Button) findViewById(R.id.chick_notes);
+    	chickPlus = (ImageButton) findViewById(R.id.chick_plus);
+    	chickList = (ImageButton) findViewById(R.id.chick_list);
+    	chickNotes = (ImageButton) findViewById(R.id.chick_notes);
     	slider_button = (com.UI.SliderUI) findViewById(R.id.slider_button);
     	
     	
@@ -51,7 +52,7 @@ public class dashboard extends Activity {
          @Override
            public void onResetHit(View v) {
         	    ResetCounter();
-                sharing_class.DeleteDB();
+                //sharing_class.DeleteDB();
            }
         });
 
@@ -73,13 +74,22 @@ public class dashboard extends Activity {
             	//try catch
 
             	//In app payment doresit
+            	//In app payment hlasky a button
             	//Filtr funkci podle stavu zaplaceni app
             	
-            	//style
-            	//Custom rating bar
-            	//custom EditText
-            	//sliding button
             	
+            	//style
+            	//Custom rating bar mrdam*
+            
+            
+            	//Navrhnout add notes button na hlavni stranku
+            	//Rozsvitit add notes button pokud je aktivni
+            	
+            	//vlastni galerie
+            	
+            	//Save button do edit activity
+            	
+            	//resize
             	            	
             }  
         });

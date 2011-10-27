@@ -53,17 +53,24 @@ public class history extends Activity {
 	        setupTabHost();
 			mTabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
 
+			/*
 			setupTab(new TextView(this), "last 24h");
 			setupTab(new TextView(this), "last week");
 			setupTab(new TextView(this), "anytime");
 			setupTab(new TextView(this), "top chicks");
+			*/
+			setupTab(new TextView(this), "");
+			setupTab(new TextView(this), "");
+			setupTab(new TextView(this), "");
+			setupTab(new TextView(this), "");
+			
 			
 			mTabHost.getTabWidget().getChildAt(0).setOnClickListener(new OnClickListener() { 
 		        @Override 
 		        public void onClick(View v) { 
 		        	
 		        	mTabHost.setCurrentTab(0);   
-		        	Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
+		        	//Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
 		        	sharing_class.setPeriod(1);
 		        	adapter.RefreshRow();
 		        } 
@@ -74,7 +81,7 @@ public class history extends Activity {
 		        public void onClick(View v) { 
 		        	
 		        	mTabHost.setCurrentTab(1);   
-		        	Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
+		        	//Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
 		        	sharing_class.setPeriod(2);
 		        	adapter.RefreshRow();
 		        } 
@@ -86,7 +93,7 @@ public class history extends Activity {
 		        public void onClick(View v) { 
 		        	
 		        	mTabHost.setCurrentTab(2);   
-		        	Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
+		        	//Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
 		        	sharing_class.setPeriod(3);
 		        	adapter.RefreshRow();
 		        } 
@@ -97,7 +104,7 @@ public class history extends Activity {
 		        public void onClick(View v) { 
 		        	
 		        	mTabHost.setCurrentTab(3);   
-		        	Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
+		        	//Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
 		        	sharing_class.setPeriod(4);
 		        	adapter.RefreshRow();
 		        } 

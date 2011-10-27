@@ -18,10 +18,11 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.helpers.user_item;
@@ -33,7 +34,9 @@ public class notes extends Activity {
 	 ImageView  photo1;
 	 ImageView  photo2;
 	 ImageView  photo3;
-	 Button camera;
+	 ImageButton camera;
+	 ImageButton edittext;
+	 TextView notes_plus;
 	 
 	 String actual_id;
 	 user_item click;
@@ -57,7 +60,9 @@ public class notes extends Activity {
        photo3 = (ImageView ) findViewById(R.id.photo3);
        ratingBar = (RatingBar)findViewById(R.id.ratingBar);
        
-       camera = (Button) findViewById(R.id.camera_button);
+       notes_plus = (TextView)findViewById(R.id.notes_plus);
+       
+       camera = (ImageButton) findViewById(R.id.camera_button);
        sharing_class = ((share_class)getApplicationContext());
        
        //GET ID
@@ -78,6 +83,20 @@ public class notes extends Activity {
        
 	    view_notes(click);
        
+	    
+	    notes_plus.setOnClickListener(new View.OnClickListener() {  
+            public void onClick(View v) {  
+           	 
+            	 
+            	//Start history activity
+            	sharing_class.SetNote(notes_plus.getText().toString());
+            	Intent i = new Intent().setClass(notes.this, Editbox_activity.class);
+             	startActivity(i);
+            	
+            	
+            }  
+        });
+	    
        //START CAMERA button listener
        camera.setOnClickListener(new View.OnClickListener() {  
            public void onClick(View v) {  
@@ -247,9 +266,16 @@ public class notes extends Activity {
     
     void view_notes(user_item click_in){
     	
+    	if(sharing_class.GetNote().length()!=0){
+    	    click.setNotes(sharing_class.GetNote().toString());
+    	    sharing_class.SetNote("");
+    	}
     	String notes_text = click.getNotes();
-        if(notes_text!=""){
-     	   notes.setText(notes_text);
+        if(notes_text.length()!=0){
+        	notes_plus.setText(notes_text);
+        }
+        else{
+        	notes_plus.setText("Click to add notes..");
         }
         
         String rating_text = click.getRating();
@@ -303,7 +329,7 @@ public class notes extends Activity {
     	String rating_text = Float.toString(rate);
         click.setRating(rating_text);
     	
-    	sharing_class.UpdateDB(actual_id,notes.getText().toString(),sharing_class.getPhotoCache(0),sharing_class.getPhotoCache(1),sharing_class.getPhotoCache(2), click.getRating(),click.getAddress());
+    	sharing_class.UpdateDB(actual_id,notes_plus.getText().toString(),sharing_class.getPhotoCache(0),sharing_class.getPhotoCache(1),sharing_class.getPhotoCache(2), click.getRating(),click.getAddress());
    	    
     }
 

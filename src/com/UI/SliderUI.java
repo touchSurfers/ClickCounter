@@ -154,20 +154,18 @@ public class SliderUI extends View {
 
         	if(movecon){
         		
-        		if(slider_button.getY()> BordersHeigth-70){
+        		if(Y> BordersHeigth-50){
         			//reset counter
         			 BordersHeigth =  BordersHeigth;
-        			int Y2 = slider_button.getY();
+        			
         			movecon = false;
         			resetCounter();
         			break;
         		}
-        		slider_button.setY(Y-20);
+        		slider_button.setY(Y);
         	}
         	
             break; 
-            
-         
 
         case MotionEvent.ACTION_UP: 
        		// touch drop - just do things here after dropping
