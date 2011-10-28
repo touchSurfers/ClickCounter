@@ -71,24 +71,26 @@ public class dashboard extends Activity {
            	  
             	//TODO
             	
+            	//Funkce predni obrazovky
             	//try catch
+            	
+            	//Pridat map activity
+            	//bug - list neotevri notes
+            	//ukladani hvezdicek a vseho hned a ne az pri ukonceni notes
+            	//Bug ukazovat spravnou fotku 
+            	// obrazek zesedly pokud neni zadny v profilu
 
             	//In app payment doresit
             	//In app payment hlasky a button
             	//Filtr funkci podle stavu zaplaceni app
             	
-            	
             	//style
-            	//Custom rating bar mrdam*
-            
             
             	//Navrhnout add notes button na hlavni stranku
             	//Rozsvitit add notes button pokud je aktivni
             	
-            	//vlastni galerie
             	
-            	//Save button do edit activity
-            	
+            	//ochrana kdyz naklikas hodne obrazku
             	//resize
             	            	
             }  

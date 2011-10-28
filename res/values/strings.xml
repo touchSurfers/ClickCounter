@@ -3,4 +3,6 @@
 <resources>
     <string name="welcome">Welcome to the Sample store!</string>
     <string name="app_name">ChickCounter</string>
+    <string name="notes">Notes</string>
+    <string name="chick_photo">Chick photo</string>
 </resources>

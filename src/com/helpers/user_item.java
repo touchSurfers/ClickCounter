@@ -14,6 +14,7 @@ public class user_item {
 	private String longi;
 	private String timestamp;
 	
+	
 	public user_item(String Id, String notes, String photo1, String photo2, String photo3,String rating, String address,String date,String lat,String longi,String timestamp) {
 		this.id = Id;
 		this.notes = notes;

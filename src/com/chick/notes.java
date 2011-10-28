@@ -23,7 +23,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.helpers.user_item;
 
@@ -54,7 +53,7 @@ public class notes extends Activity {
         setContentView(R.layout.notes);
         
         try{
-       notes = (EditText) findViewById(R.id.notes);
+       
        photo1 = (ImageView ) findViewById(R.id.photo1);
        photo2 = (ImageView ) findViewById(R.id.photo2);
        photo3 = (ImageView ) findViewById(R.id.photo3);
@@ -69,7 +68,7 @@ public class notes extends Activity {
        actual_id = sharing_class.getChickSelected();
 	       
 	      
-	       Toast.makeText(notes.this, actual_id, Toast.LENGTH_SHORT).show();
+	     
        //THREAD
        //Search for click in DB
        
@@ -89,7 +88,8 @@ public class notes extends Activity {
            	 
             	 
             	//Start history activity
-            	sharing_class.SetNote(notes_plus.getText().toString());
+            
+            	sharing_class.SetNote(click.getNotes().toString());
             	Intent i = new Intent().setClass(notes.this, Editbox_activity.class);
              	startActivity(i);
             	
@@ -113,8 +113,10 @@ public class notes extends Activity {
           	 
         	   try{
         	   if(sharing_class.getPhotoCache(0).length()<1){
-        		   return;
+        		   StartCamera();
         	   }
+        	   else{
+        	   /*
         	   File photo = new File(Environment.getExternalStorageDirectory()+"/ChickCounter", sharing_class.getPhotoCache(0));
         	
         	   //Intent intent = new Intent(Intent.ACTION_VIEW,Uri.fromFile(photo));
@@ -123,7 +125,46 @@ public class notes extends Activity {
         	   intent.setDataAndType(Uri.fromFile(photo), "image/jpg");
         	   
         	   startActivity(intent);
-        	          	
+        	   */
+        		   
+        	   Intent i = new Intent().setClass(notes.this, Image_activity.class);
+               startActivity(i);
+	
+        	   }
+        	   }catch(Exception e){
+        		   e.getLocalizedMessage();
+        	   }
+           }  
+       });
+       
+       photo2.setOnClickListener(new View.OnClickListener() {  
+           public void onClick(View v) {  
+          	 
+        	   try{
+        	   if(sharing_class.getPhotoCache(1).length()<1){
+        		   StartCamera();
+        	   }
+        	   else{
+        	   Intent i = new Intent().setClass(notes.this, Image_activity.class);
+            	startActivity(i);
+        	   }     	
+        	   }catch(Exception e){
+        		   e.getLocalizedMessage();
+        	   }
+           }  
+       });
+       
+       photo3.setOnClickListener(new View.OnClickListener() {  
+           public void onClick(View v) {  
+          	 
+        	   try{
+        	   if(sharing_class.getPhotoCache(2).length()<1){
+        		   StartCamera();
+        	   }
+        	   else{
+        	   Intent i = new Intent().setClass(notes.this, Image_activity.class);
+            	startActivity(i);
+        	   }      	
         	   }catch(Exception e){
         		   e.getLocalizedMessage();
         	   }
@@ -133,6 +174,18 @@ public class notes extends Activity {
         }catch(Exception e){
         	e.getLocalizedMessage();
         }
+        
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+			
+			@Override
+			public void onRatingChanged(RatingBar ratingBar, float rating,
+					boolean fromUser) {
+				
+				// TODO Auto-generated method stub
+				save_notes();
+			}
+		});
+        
     }
     
     @Override
@@ -270,12 +323,14 @@ public class notes extends Activity {
     	    click.setNotes(sharing_class.GetNote().toString());
     	    sharing_class.SetNote("");
     	}
-    	String notes_text = click.getNotes();
-        if(notes_text.length()!=0){
-        	notes_plus.setText(notes_text);
+    	
+    	
+        if(click.getNotes().length()!=0){
+        	notes_plus.setText(click.getNotes());
         }
         else{
         	notes_plus.setText("Click to add notes..");
+        	click.setNotes("");
         }
         
         String rating_text = click.getRating();
@@ -315,7 +370,7 @@ public class notes extends Activity {
 		 }
     	
     	
-        //TODO 
+    	save_notes();
       
         
     	
@@ -329,7 +384,7 @@ public class notes extends Activity {
     	String rating_text = Float.toString(rate);
         click.setRating(rating_text);
     	
-    	sharing_class.UpdateDB(actual_id,notes_plus.getText().toString(),sharing_class.getPhotoCache(0),sharing_class.getPhotoCache(1),sharing_class.getPhotoCache(2), click.getRating(),click.getAddress());
+    	sharing_class.UpdateDB(actual_id,click.getNotes().toString(),sharing_class.getPhotoCache(0),sharing_class.getPhotoCache(1),sharing_class.getPhotoCache(2), click.getRating(),click.getAddress());
    	    
     }
 
