@@ -71,10 +71,12 @@ public class dashboard extends Activity {
            	  
             	//TODO
             	
+            	//Pridat map activity
+            	//vrch v notes 
             	//Funkce predni obrazovky
             	//try catch
             	
-            	//Pridat map activity
+            	//doresit zobrazeni listu
             	//bug - list neotevri notes
             	//ukladani hvezdicek a vseho hned a ne az pri ukonceni notes
             	//Bug ukazovat spravnou fotku 
