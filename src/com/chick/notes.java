@@ -89,10 +89,16 @@ public class notes extends Activity {
             	 
             	//Start history activity
             
+            	/*
             	sharing_class.SetNote(click.getNotes().toString());
             	Intent i = new Intent().setClass(notes.this, Editbox_activity.class);
              	startActivity(i);
+            	*/
             	
+            
+            	sharing_class.setLocation_set(Double.parseDouble(click.getLat()),Double.parseDouble( click.getLong()));
+            	Intent i = new Intent().setClass(notes.this, chicks_map_activity2.class);
+             	startActivity(i);
             	
             }  
         });
@@ -171,9 +177,7 @@ public class notes extends Activity {
            }  
        });
        
-        }catch(Exception e){
-        	e.getLocalizedMessage();
-        }
+       
         
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
 			
@@ -185,6 +189,10 @@ public class notes extends Activity {
 				save_notes();
 			}
 		});
+        
+        }catch(Exception e){
+        	e.getLocalizedMessage();
+        }
         
     }
     

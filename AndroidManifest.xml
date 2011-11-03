@@ -16,6 +16,7 @@
    	  
     <application android:name="com.chick.share_class" android:icon="@drawable/icon" android:label="@string/app_name">
    
+     <uses-library android:name="com.google.android.maps" /> 
      
      <activity android:name=".SimpleDemo"
 		  android:screenOrientation="portrait"
@@ -26,12 +27,30 @@
             </intent-filter>
         </activity>
         
+        <activity android:name=".chicks_map_activity"
+        android:screenOrientation="portrait"
+                  android:theme="@android:style/Theme.NoTitleBar"
+                  android:label="@string/app_name">
+            <intent-filter>
+           			
+            </intent-filter>
+        </activity>
+        
+        <activity android:name=".chicks_map_activity2"
+        android:screenOrientation="portrait"
+                  android:theme="@android:style/Theme.NoTitleBar"
+                  android:label="@string/app_name">
+            <intent-filter>
+           			
+            </intent-filter>
+        </activity>
+        
         <activity android:name=".dashboard"
           android:screenOrientation="portrait"
                   android:theme="@android:style/Theme.NoTitleBar"
                   android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                 <action android:name="android.intent.action.MAIN" />
                   <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -38,6 +38,9 @@ public class share_class extends Application {
 	private String actual_photo= "";
 	private String actual_selected = "";
 	private Thread ControlThread;
+	Location my_location;
+	Double location_set_lat = 20.0;
+	Double location_set_long = 20.0;
 	
 	private String notes_added = "";
 	private LinkedList<String> photo_cache=new LinkedList<String>();
@@ -46,11 +49,6 @@ public class share_class extends Application {
     SQLiteDatabase db;
     json_class sender;
     
-	
-	//json_class json_sender = new json_class() ;
-	//messages_view_store mess_store = new messages_view_store();
-	//favorites_view_store fav_store = new favorites_view_store();
-	
 	
 	data_storage dbMgr =null;
 	
@@ -158,18 +156,22 @@ public class share_class extends Application {
 			  return notes_added;
       }
 		  
+		  public Location getLocation(){
+			    return my_location;
+		  }
+		  public void setLocation(Location location){
+			   my_location = location;
+		  }
+		  
+		  public void setLocation_set(Double lat, Double longi){
+			  
+			   location_set_lat= lat;
+			   location_set_long= longi;
+		  }
 	  
 	  public void addPhotoCache(String s){
-		
-		  //TODO rizeni logiky pridavani images
 	try{
-	//if(photo_cache.size()>0){
-		//Array je nainicializovany
-		  
 		photo_cache.addFirst(s);
-		
-		
-	//}
 	}catch(Exception e){
 		
 	}
@@ -199,9 +201,7 @@ public class share_class extends Application {
 	  
 	  
 	  public int getChickCount(){
-		    
 		  		return settings.getInt("chick_count",0);
-		  
 	  }
 	  
 	  public void setChickCount(int s){
@@ -253,7 +253,7 @@ public class share_class extends Application {
 		  ControlThread = new Thread(null, InsertThreadProc, "InsertThread");
 		  ControlThread.start();
 	  }
-	  
+
 	  Runnable InsertThreadProc = new Runnable() {
 	        public void run() {
 	        	
@@ -311,6 +311,19 @@ public class share_class extends Application {
 	              
 	        }//run
 	    };
+	    
+	    public void GetLastLoc(){
+			  
+			try{  
+			//LOCATION
+	  		//Get actual user location
+	  		
+	  		LocationManager locationManager;
+	  		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);      
+	  		my_location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+			}catch(Exception e){}
+			
+		  }
 	    
 	    public static final String md5(final String s) {
 	        try {

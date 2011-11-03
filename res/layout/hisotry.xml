@@ -13,9 +13,9 @@
 		
    <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@android:id/tabhost" android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
+		android:layout_height="fill_parent" android:layout_weight="1" >
 		<LinearLayout android:orientation="vertical"
-			android:layout_width="fill_parent" android:layout_height="fill_parent">
+			android:layout_width="fill_parent" android:layout_height="fill_parent" android:weightSum="1">
 			<View android:layout_width="fill_parent" android:layout_height="0.5dip"
 				android:background="#000" />
 			<TabWidget android:id="@android:id/tabs"
@@ -28,13 +28,14 @@
 				<ListView
 			        android:id="@+id/list"
 			        android:layout_width="fill_parent"
-			        android:layout_height="fill_parent" 
+			        android:layout_height="fill_parent"
 			        android:layout_weight="1"
 			         android:background="#202020"/>
 			</FrameLayout>
+			
 		</LinearLayout>
 	</TabHost>
-	
+   <Button android:id="@+id/button1" android:text="show on map" android:layout_width="match_parent" android:layout_height="wrap_content"></Button>
 	
         
 </LinearLayout>

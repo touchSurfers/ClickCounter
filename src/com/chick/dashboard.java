@@ -26,7 +26,6 @@ public class dashboard extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        
         counter = (TextView) findViewById(R.id.counter_view);
     	chickPlus = (ImageButton) findViewById(R.id.chick_plus);
     	chickList = (ImageButton) findViewById(R.id.chick_list);
@@ -71,15 +70,15 @@ public class dashboard extends Activity {
            	  
             	//TODO
             	
-            	//Pridat map activity
+            	
+            	//pridat paid/notpaid promenou
             	//vrch v notes 
             	//Funkce predni obrazovky
             	//try catch
             	
             	//doresit zobrazeni listu
-            	//bug - list neotevri notes
-            	//ukladani hvezdicek a vseho hned a ne az pri ukonceni notes
-            	//Bug ukazovat spravnou fotku 
+            	//rozchodit tlacitko mapa v listu dole
+
             	// obrazek zesedly pokud neni zadny v profilu
 
             	//In app payment doresit
@@ -103,10 +102,16 @@ public class dashboard extends Activity {
            	 
             	 
             	//Start history activity
+            	
             	sharing_class.clearPhotoCache();
             	Intent i = new Intent().setClass(dashboard.this, history.class);
              	startActivity(i);
-            	
+             	
+            	/*
+            	sharing_class.clearPhotoCache();
+            	Intent i = new Intent().setClass(dashboard.this, chicks_map_activity.class);
+             	startActivity(i);
+            	*/
             	
             }  
         });
