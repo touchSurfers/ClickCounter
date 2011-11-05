@@ -26,11 +26,12 @@ public class data_storage {
     private static final String CLICK_LAT = "click_lat";
     private static final String CLICK_LONG = "click_long";
     private static final String CLICK_TIMESTAMP = "click_timestamp";
+    private static final String ORDER_DESC =" ORDER BY CLICK_TIMESTAMP DESC";
     
 
     private static final String SELECT_CLICKS = "SELECT * FROM " + CLICK_TABLE + " WHERE CLICK_TIMESTAMP > ";
     private static final String SELECT_ALL_CLICKS = "SELECT * FROM " + CLICK_TABLE;
-    private static final String SELECT_TOP_CLICKS = "SELECT * FROM " + CLICK_TABLE;
+    private static final String SELECT_TOP_CLICKS = "SELECT * FROM " + CLICK_TABLE + " WHERE rating = \"5.0\" ORDER BY CLICK_TIMESTAMP DESC";
     
     public  data_storage(Context context) {
         dbHelper = new data_helper(context, CLICK_TABLE, CLICK_ID + " TEXT,"  + CLICK_NOTES + " TEXT," + CLICK_PHOTO1 + " TEXT," + CLICK_PHOTO2 + " TEXT," + CLICK_PHOTO3 + " TEXT,"  + CLICK_RATING + " TEXT,"  + CLICK_ADDRESS + " TEXT," + CLICK_DATE + " TEXT,"  + CLICK_LAT + " TEXT," + CLICK_LONG + " TEXT," + CLICK_TIMESTAMP + " TEXT");
@@ -99,13 +100,13 @@ public class data_storage {
 	    timestamp_week = Long.toString(dtMili_week);
         
         if(period == 1){
-        	query = SELECT_CLICKS + timestamp_day;
+        	query = SELECT_CLICKS + timestamp_day + ORDER_DESC;
         }
         else if(period == 2){
-        	 query = SELECT_CLICKS + timestamp_week;
+        	 query = SELECT_CLICKS + timestamp_week + ORDER_DESC;
         }
         else if(period == 3){
-        	 query = SELECT_ALL_CLICKS;
+        	 query = SELECT_ALL_CLICKS + ORDER_DESC;
         }
         else if(period == 4){
        	 query = SELECT_TOP_CLICKS;

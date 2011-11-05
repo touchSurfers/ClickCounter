@@ -2,28 +2,23 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="150dip"
-  android:background="#202020"
+  android:layout_height="wrap_content"
+  android:background="#1f2021"
   >
   
   
   <RelativeLayout
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="80dip">
+    android:layout_height="90dip">
     
-  <ImageView
-  	  android:id="@+id/image"
-	  android:layout_width="50dip"
-	  android:layout_height="50dip" android:src="@drawable/stub" android:scaleType="centerCrop"/>
- 
- 
- <TextView
-  	  android:id="@+id/text"
-  	  android:layout_width="fill_parent"
-	  android:layout_height="wrap_content"
-	  android:layout_weight="1" android:layout_gravity="left|center_vertical" android:textSize="20dip" android:layout_marginLeft="10dip"/>
- 
+<LinearLayout android:layout_width="70dip" android:layout_height="70dip" android:background="@drawable/photo_frame" android:orientation="horizontal" android:layout_margin="10dip" android:id="@+id/linearLayout1">      
+<ImageView android:scaleType="centerCrop" android:adjustViewBounds="false" android:gravity="center_horizontal" android:id="@+id/image"  android:src="@drawable/her_face" android:layout_gravity="center_vertical" android:layout_height="fill_parent" android:layout_width="fill_parent" android:layout_margin="4dip"></ImageView>
+</LinearLayout>
+ <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/address_item" android:textSize="14dip" android:text="datuuuuuuuuuum" android:layout_centerVertical="true" android:layout_toRightOf="@+id/linearLayout1"></TextView>
+ <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/note_item" android:textSize="14dip" android:text="Note" android:layout_alignBottom="@+id/linearLayout1" android:layout_alignLeft="@+id/address_item"></TextView>
+ <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/date_item" android:text="TextView" android:layout_alignTop="@+id/linearLayout1" android:layout_alignLeft="@+id/address_item"></TextView>
+  <RatingBar android:layout_height="wrap_content" android:isIndicator="true" android:layout_width="wrap_content" style="@style/foodRatingBar_small" android:id="@+id/ratingBar_small"  android:layout_alignBottom="@+id/note_item" android:layout_toRightOf="@+id/date_item"></RatingBar>  
  
   </RelativeLayout>
   

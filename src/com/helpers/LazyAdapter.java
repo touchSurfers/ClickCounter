@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.chick.R;
@@ -49,7 +50,10 @@ public class LazyAdapter extends BaseAdapter {
     }
     
     public static class ViewHolder{
-        public TextView text;
+        public TextView date;
+        public TextView address;
+        public TextView note;
+        public RatingBar rating;
         public ImageView image;
        
     }
@@ -60,8 +64,11 @@ public class LazyAdapter extends BaseAdapter {
         if(convertView==null){
             vi = inflater.inflate(R.layout.item, null);
             holder=new ViewHolder();
-            holder.text=(TextView)vi.findViewById(R.id.text);
+            holder.date=(TextView)vi.findViewById(R.id.date_item);
+            holder.address=(TextView)vi.findViewById(R.id.address_item);
+            holder.note=(TextView)vi.findViewById(R.id.note_item);
             holder.image=(ImageView)vi.findViewById(R.id.image);
+            holder.rating = (RatingBar)vi.findViewById(R.id.ratingBar_small);
             
             vi.setTag(holder);
         }
@@ -69,10 +76,22 @@ public class LazyAdapter extends BaseAdapter {
             holder=(ViewHolder)vi.getTag();
         
        
-        holder.text.setText(clicks.get(position).getDate());
+        holder.date.setText(clicks.get(position).getDate());
+        holder.address.setText(clicks.get(position).getAddress());
+        holder.note.setText(clicks.get(position).getNotes());
         
         holder.image.setTag(clicks.get(position).getPhoto(1));
         imageLoader.DisplayImage(clicks.get(position).getPhoto(1), activity, holder.image);
+        
+        String rating_text = clicks.get(position).getRating();
+        try{
+        	 holder.rating.setRating(Float.valueOf(rating_text));
+        }catch(Exception e){
+        	holder.rating.setRating(0);
+        	rating_text = "";
+        	e.getLocalizedMessage();
+        }
+        rating_text = "";
         return vi;
     }
     

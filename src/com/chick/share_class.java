@@ -322,7 +322,7 @@ public class share_class extends Application {
 	        		sender.nameValuePairs.add(new BasicNameValuePair("id", ID));
 	                sender.nameValuePairs.add(new BasicNameValuePair("lat",lat));
 	                sender.nameValuePairs.add(new BasicNameValuePair("long",longi));
-	                sender.GetData();
+	                //sender.GetData();
 	                
 	        		
 	        	}catch(Exception e){}

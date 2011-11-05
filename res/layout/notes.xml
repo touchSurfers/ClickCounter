@@ -49,8 +49,18 @@
 
 
 </LinearLayout>
-    <RatingBar android:id="@+id/ratingBar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal"></RatingBar>
+    
    
+   <RatingBar 
+      android:id="@+id/ratingBar"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:numStars="5"
+      android:layout_gravity="center_horizontal"
+      android:isIndicator="false"
+      style="@style/foodRatingBar"    
+/>  
+
     
        <TextView android:padding="10dip" android:paddingTop="20dip" android:maxLength="150" android:lines="5" android:background="@drawable/notes_note"  android:text="" android:id="@+id/notes_plus" android:layout_height="133dip" android:layout_width="295dip" android:layout_gravity="center_horizontal"  android:onClick="onClick"                
         android:clickable="true" ></TextView>

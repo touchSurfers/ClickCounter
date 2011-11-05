@@ -54,12 +54,7 @@ public class history extends Activity {
 	        setupTabHost();
 			mTabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
 
-			/*
-			setupTab(new TextView(this), "last 24h");
-			setupTab(new TextView(this), "last week");
-			setupTab(new TextView(this), "anytime");
-			setupTab(new TextView(this), "top chicks");
-			*/
+		
 			setupTab(new TextView(this), "");
 			setupTab(new TextView(this), "");
 			setupTab(new TextView(this), "");

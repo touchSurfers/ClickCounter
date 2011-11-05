@@ -35,7 +35,7 @@ public class ImageLoader {
             cacheDir.mkdirs();
     }
     
-    final int stub_id=R.drawable.stub;
+    final int stub_id=R.drawable.her_face;
     public void DisplayImage(String url, Activity activity, ImageView imageView)
     {
     	
