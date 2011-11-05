@@ -15,15 +15,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import sharing_class.chicks_server;
 import android.os.Handler;
 import android.os.Message;
+
+import com.chick.share_class;
 
 public class json_class {
 	 
 	 
 	 public String URL;
 	 public List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2); 
-	 
+	 share_class sharing_class;
 	 
 	 public void setUrl(String url){
 		 URL = url;
@@ -51,21 +54,73 @@ public class json_class {
 			  }
 			});
 	    
+	    Thread trd2 = new Thread(new Runnable(){
+			  @Override
+			  public void run(){
+				 try{ 
+				 String response = execHttpRequest(URL);
+				 parse(response);
+				 
+				 //TODO
+				 //Vytvorit handler a poslat zpravu o dokonceni
+				 //handler_.sendMessage(Message.obtain(handler_, UPDATE_UI, response));
+				 }catch(Exception e){}
+			  }
+			});
+	    
 	public void GetData(){
-		  
+		//If timestamp is OLD (10 minutes) else return with old
+		
 			trd.setPriority(Thread.MAX_PRIORITY-1);
 			trd.run();
 	}
+	
+	public void GetData(share_class share_class2){
+		  
+		sharing_class = share_class2;
+		trd2.setPriority(Thread.MAX_PRIORITY-1);
+		trd2.run();
+    } 
 
 	 private void parse(String serverResponse) {
 		 
 		 try{ 
 
 			 JSONObject json = new JSONObject(serverResponse);
-			 JSONArray menuitemArray = json.getJSONArray("data");
- 
+			 JSONArray menuitemArray = json.getJSONArray("chicks");
+			 
+			 
+			 sharing_class.chicks_server_map.clear();
+			 sharing_class.chicks_server_map_delete();
+			 
+			 for(int i=0;i< menuitemArray.length() ;i++){
+				 
+				 
+				 chicks_server res = new chicks_server();
+				 
+				 res.setDeviceID(menuitemArray.getJSONObject(i).getString("device_id").toString()) ;
+				 res.setChickID(menuitemArray.getJSONObject(i).getString("chick_id").toString()) ;
+				 res.setDate(menuitemArray.getJSONObject(i).getString("date").toString()) ;
+				 res.setLat(menuitemArray.getJSONObject(i).getString("lat").toString());
+				 res.setLongi(menuitemArray.getJSONObject(i).getString("long").toString());
+				 
+				
+				 sharing_class.chicks_server_map.add(res);
+				 
+			 }
+			 
+			 
+			     sharing_class.mHandler.sendMessage(sharing_class.mHandler.obtainMessage());
+			 
+			 
 		    } 
-			 catch (JSONException e) {}
+			 catch (JSONException e) {
+				 
+				
+				 
+				 sharing_class.mHandler.sendMessage(sharing_class.mHandler.obtainMessage());
+				 
+			 }
 			 
 		}
 	 

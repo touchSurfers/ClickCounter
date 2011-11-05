@@ -144,7 +144,7 @@ public class data_storage {
         return click;
     }
     
-    public void update(String id,String notes,String photo1,String photo2, String photo3, String rating, String address){
+    public void update(String id,String notes,String photo1,String photo2, String photo3, String rating, String address, String lat, String longi){
     	
     	SQLiteDatabase sqlite = dbHelper.getWritableDatabase();
 
@@ -160,6 +160,10 @@ public class data_storage {
        
        initialValues.put(CLICK_RATING, rating);
        initialValues.put(CLICK_ADDRESS, address);
+       
+       initialValues.put(CLICK_LAT, lat);
+       initialValues.put(CLICK_LONG, longi);
+       
 
         try{
        int i= sqlite.update(CLICK_TABLE, initialValues, "click_id=?", new String[]{id}); 

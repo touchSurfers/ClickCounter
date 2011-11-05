@@ -15,9 +15,12 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -34,14 +37,19 @@ public class notes extends Activity {
 	 ImageView  photo2;
 	 ImageView  photo3;
 	 ImageButton camera;
+	 Button map;
 	 ImageButton edittext;
 	 TextView notes_plus;
+	 
+	 TextView notes_address;
+	 TextView notes_date;
 	 
 	 String actual_id;
 	 user_item click;
 	 String new_name;
 	 RatingBar ratingBar;
-	
+	 Handler m_handler; 
+	 
 	 public static int TAKE_IMAGE = 111;
 	
 	
@@ -58,7 +66,10 @@ public class notes extends Activity {
        photo2 = (ImageView ) findViewById(R.id.photo2);
        photo3 = (ImageView ) findViewById(R.id.photo3);
        ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+       notes_address = (TextView ) findViewById(R.id.textView_address);
+  	   notes_date = (TextView ) findViewById(R.id.textView_date);
        
+       map = (Button)findViewById(R.id.button_map);
        notes_plus = (TextView)findViewById(R.id.notes_plus);
        
        camera = (ImageButton) findViewById(R.id.camera_button);
@@ -80,6 +91,17 @@ public class notes extends Activity {
        
        //Show data
        
+	    // our handler
+		   m_handler = new Handler() {
+		     @Override
+		     public void handleMessage(Message msg) {
+		    	 
+		    	notes_address.setText(click.getAddress());
+		    	 
+		        }
+		    };
+		    
+	       
 	    view_notes(click);
        
 	    
@@ -89,15 +111,9 @@ public class notes extends Activity {
             	 
             	//Start history activity
             
-            	/*
+            	
             	sharing_class.SetNote(click.getNotes().toString());
             	Intent i = new Intent().setClass(notes.this, Editbox_activity.class);
-             	startActivity(i);
-            	*/
-            	
-            
-            	sharing_class.setLocation_set(Double.parseDouble(click.getLat()),Double.parseDouble( click.getLong()));
-            	Intent i = new Intent().setClass(notes.this, chicks_map_activity2.class);
              	startActivity(i);
             	
             }  
@@ -112,6 +128,23 @@ public class notes extends Activity {
            }  
        });
        
+       //StartMap
+       map.setOnClickListener(new View.OnClickListener() {  
+           public void onClick(View v) {  
+          	 
+        		sharing_class.map_changed_address   = false;
+        		try{
+        			String lattt = click.getLat();
+           	sharing_class.setLocation_set(Double.parseDouble(click.getLat()),Double.parseDouble(click.getLong()));
+           	Intent i = new Intent().setClass(notes.this, chicks_map_activity.class);
+            startActivity(i);
+        		}catch(Exception e){
+         		   e.getLocalizedMessage();
+         	   }
+           
+        	          	
+           }  
+       });
      //START CAMERA button listener
   
        photo1.setOnClickListener(new View.OnClickListener() {  
@@ -327,6 +360,28 @@ public class notes extends Activity {
     
     void view_notes(user_item click_in){
     	
+    	if(sharing_class.map_changed_address == true){
+    		sharing_class.map_changed_address = false;
+    		//preulozit nove souradnice
+    		click.setLat(Double.toString(sharing_class.location_set_lat));
+    		click.setLong(Double.toString(sharing_class.location_set_long));
+    		//preulozit novou addressu
+    		
+    		//run thread and get new address
+    		Thread AddressThread = new Thread(null, AddressThreadProc, "AddressThread");
+    		AddressThread.start();
+    		
+    		//notes_address.setText("ADRESA ZMENA") ;
+    	}else{
+    	
+    	//Show address
+    	notes_address.setText(click_in.getAddress().toString()) ;
+    	}
+    	
+    	//Show date
+    	notes_date.setText(click_in.getDate().toString());
+    	
+
     	if(sharing_class.GetNote().length()!=0){
     	    click.setNotes(sharing_class.GetNote().toString());
     	    sharing_class.SetNote("");
@@ -392,8 +447,23 @@ public class notes extends Activity {
     	String rating_text = Float.toString(rate);
         click.setRating(rating_text);
     	
-    	sharing_class.UpdateDB(actual_id,click.getNotes().toString(),sharing_class.getPhotoCache(0),sharing_class.getPhotoCache(1),sharing_class.getPhotoCache(2), click.getRating(),click.getAddress());
+    	sharing_class.UpdateDB(actual_id,click.getNotes().toString(),sharing_class.getPhotoCache(0),sharing_class.getPhotoCache(1),sharing_class.getPhotoCache(2), click.getRating(),click.getAddress(),click.getLat(),click.getLong());
    	    
     }
 
+    
+    Runnable AddressThreadProc = new Runnable() {
+        public void run() {
+        	
+        	try{
+        		String newAddres = sharing_class.requestAdress(sharing_class.location_set_lat, sharing_class.location_set_long);
+        		click.setAddress(newAddres);
+        		m_handler.sendMessage(m_handler.obtainMessage());
+        	}catch(Exception e){
+        		e.getLocalizedMessage();
+        	}
+        	
+        };
+    };
+        	
 }

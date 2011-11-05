@@ -10,6 +10,7 @@ import java.util.Random;
 
 import org.apache.http.message.BasicNameValuePair;
 
+import sharing_class.chicks_server;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,6 +18,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Handler;
 
 import com.helpers.data_storage;
 import com.helpers.json_class;
@@ -26,13 +28,29 @@ import com.helpers.user_item;
 
 public class share_class extends Application {
 
+	
+	
+
+	public LinkedList<chicks_server> chicks_server_map = new LinkedList<chicks_server>();
+	public void chicks_server_map_delete(){
+		
+		//TODO
+		//smycka
+		//chicks_server_map.remove(myObject);
+		//myObject = null;
+		//chicks_server_map
+	}
+	
 	public static final String PREFS_NAME = "chick_data";
 	SharedPreferences settings ;
 	SharedPreferences.Editor editor;
 	private static final String TAG = "share_class";
 	
+	 public Handler mHandler;
 	
 	//Private variables
+
+	 public boolean map_changed_address = false;
 	private int chick_count;
 	private int period = 1;
 	private String actual_photo= "";
@@ -104,10 +122,10 @@ public class share_class extends Application {
           
 	  }
 	  
-      public void UpdateDB(String id,String notes,String photo1,String photo2,String photo3, String rating,String address){
+      public void UpdateDB(String id,String notes,String photo1,String photo2,String photo3, String rating,String address,String lat, String longi){
 		  
 		  if(dbMgr != null)
-		  dbMgr.update(id, notes, photo1, photo2, photo3, rating,address);
+		  dbMgr.update(id, notes, photo1, photo2, photo3, rating,address,lat,longi);
           
 	  }
 	  
@@ -199,7 +217,6 @@ public class share_class extends Application {
 		  
 	  }
 	  
-	  
 	  public int getChickCount(){
 		  		return settings.getInt("chick_count",0);
 	  }
@@ -253,6 +270,8 @@ public class share_class extends Application {
 		  ControlThread = new Thread(null, InsertThreadProc, "InsertThread");
 		  ControlThread.start();
 	  }
+	  
+      
 
 	  Runnable InsertThreadProc = new Runnable() {
 	        public void run() {
@@ -293,7 +312,7 @@ public class share_class extends Application {
         		    InsertDB(ID,"","","","","","",date,lat,longi,timestamp_s);
         		   
         		    String address = requestAdress(actual_location.getLatitude(),actual_location.getLongitude());
-         		   	UpdateDB(ID,"","","","","",address);
+         		   	UpdateDB(ID,"","","","","",address,lat,longi);
         		    
         		    //Send this information to cloud
         		    
@@ -311,6 +330,44 @@ public class share_class extends Application {
 	              
 	        }//run
 	    };
+	    
+	    public void getServerChicks() {
+	       
+	        	try{	
+	        			
+	        		//LOCATION
+	        		//Get actual chick position
+	        		Location actual_location;
+	        		LocationManager locationManager;
+	        		
+	        		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);      
+	        		actual_location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        		    //Get current date in readable format and also timestamp
+        		    String date = DateFormat.getDateTimeInstance().format(new Date());
+        		    
+        		    //Timestamp
+        		    String timestamp_s = "";
+        		    long dtMili = System.currentTimeMillis();
+        		    dtMili = dtMili/1000;
+        		    timestamp_s = Long.toString(dtMili);        		    
+        		    
+        		    String lat = Double.toString(actual_location.getLatitude());
+        		    String longi = Double.toString(actual_location.getLongitude());
+        		    
+        		    //Send this information to cloud
+        		    
+        		    sender.nameValuePairs.clear();
+	        		sender.setUrl("http://gi60s.com/get_chicks.php");
+	        		sender.nameValuePairs.add(new BasicNameValuePair("device_id", getDeviceId()));
+	                sender.nameValuePairs.add(new BasicNameValuePair("lat",lat));
+	                sender.nameValuePairs.add(new BasicNameValuePair("long",longi));
+	                sender.GetData(share_class.this);
+	                
+	        		
+	        	}catch(Exception e){}
+				
+	    }
 	    
 	    public void GetLastLoc(){
 			  

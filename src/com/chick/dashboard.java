@@ -36,7 +36,7 @@ public class dashboard extends Activity {
         sharing_class = ((share_class)getApplicationContext());
         
        // ResetCounter();
-       // sharing_class.DeleteDB();
+        //sharing_class.DeleteDB();
         
         InitCounter();
         if(sharing_class.getChickCount() < 1){
@@ -69,31 +69,42 @@ public class dashboard extends Activity {
             	sharing_class.InsertThread();
            	  
             	//TODO
-            	
-            	
-            	//pridat paid/notpaid promenou
+
             	//vrch v notes 
             	//Funkce predni obrazovky
-            	//try catch
-            	
             	//doresit zobrazeni listu
-            	//rozchodit tlacitko mapa v listu dole
+            	//Add notes tlacitko v predu
+            	
+            	//udelat PHP server
+            	//Prepocitavat num of chicks v mape se zoomem, cim dal tim snizuju presnost a zaokrouhluju
 
-            	// obrazek zesedly pokud neni zadny v profilu
-
+            	//OPTIMALIZACE****
+            	//try catch
+            	//If timestamp is OLD (10 minutes) else return with old jsno_class GetData()
+            	//Loading progress for images and map
+            	
+            	
+            	//BUGS****
+            	//ochrana kdyz naklikas hodne obrazku
+            	//pri prechodu mezi taby dochazi k errorum - nesedi ID
+            	
+            	
+            	//IN APP****
             	//In app payment doresit
             	//In app payment hlasky a button
             	//Filtr funkci podle stavu zaplaceni app
+            	//pridat paid/notpaid promenou
+            	//notification
             	
-            	//style
-            
+            	
+            	//STYLE***
+            	//obrazek zesedly pokud neni zadny v profilu
             	//Navrhnout add notes button na hlavni stranku
             	//Rozsvitit add notes button pokud je aktivni
-            	
-            	
-            	//ochrana kdyz naklikas hodne obrazku
             	//resize
-            	            	
+            	//v mape dodelat zobrazeni cisla poctu chicks
+            	
+            	//dodelat vsechny TODO v celem solution          	
             }  
         });
         

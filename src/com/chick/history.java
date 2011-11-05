@@ -12,12 +12,12 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.helpers.LazyAdapter;
 import com.helpers.user_item;
@@ -28,7 +28,7 @@ public class history extends Activity {
 	 LazyAdapter adapter;
 	 share_class sharing_class;
 	 LinkedList<user_item> clicks;
-	
+	 Button start_map;
 	    
 	 private TabHost mTabHost;
 
@@ -45,10 +45,11 @@ public class history extends Activity {
 	        try{
 	        sharing_class = ((share_class)getApplicationContext());
 	        
+	        start_map = (Button)findViewById(R.id.button_map);
 	        list=(ListView)findViewById(R.id.list);
 	        adapter=new LazyAdapter(this,getApplicationContext());
 	        list.setAdapter(adapter);
-	        
+	       
 
 	        setupTabHost();
 			mTabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
@@ -146,6 +147,16 @@ public class history extends Activity {
 	        	 }
 	        }
 	       });
+	       
+	       start_map.setOnClickListener(new View.OnClickListener() {  
+	            public void onClick(View v) {  
+	              	 
+	            	//Start map activity
+	            	Intent i = new Intent().setClass(history.this, chicks_map_activity2.class);
+	             	startActivity(i);
+	            	
+	            }  
+	        });
 	       
 	       clicks = sharing_class.GetDB(sharing_class.getPeriod());
 	       
