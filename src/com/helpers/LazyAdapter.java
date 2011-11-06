@@ -78,7 +78,14 @@ public class LazyAdapter extends BaseAdapter {
        
         holder.date.setText(clicks.get(position).getDate());
         holder.address.setText(clicks.get(position).getAddress());
-        holder.note.setText(clicks.get(position).getNotes());
+        String text_note = clicks.get(position).getNotes();
+        if(text_note.length() == 0){
+        	holder.note.setText("Add note...");
+        }
+        else{
+        	holder.note.setText(text_note);
+        }
+        
         
         holder.image.setTag(clicks.get(position).getPhoto(1));
         imageLoader.DisplayImage(clicks.get(position).getPhoto(1), activity, holder.image);

@@ -5,22 +5,18 @@
   android:layout_height="wrap_content"
   android:background="#1f2021"
   >
-  
-  
-  <RelativeLayout
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="90dip">
-    
-<LinearLayout android:layout_width="70dip" android:layout_height="70dip" android:background="@drawable/photo_frame" android:orientation="horizontal" android:layout_margin="10dip" android:id="@+id/linearLayout1">      
-<ImageView android:scaleType="centerCrop" android:adjustViewBounds="false" android:gravity="center_horizontal" android:id="@+id/image"  android:src="@drawable/her_face" android:layout_gravity="center_vertical" android:layout_height="fill_parent" android:layout_width="fill_parent" android:layout_margin="4dip"></ImageView>
-</LinearLayout>
- <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/address_item" android:textSize="14dip" android:text="datuuuuuuuuuum" android:layout_centerVertical="true" android:layout_toRightOf="@+id/linearLayout1"></TextView>
- <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/note_item" android:textSize="14dip" android:text="Note" android:layout_alignBottom="@+id/linearLayout1" android:layout_alignLeft="@+id/address_item"></TextView>
- <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/date_item" android:text="TextView" android:layout_alignTop="@+id/linearLayout1" android:layout_alignLeft="@+id/address_item"></TextView>
-  <RatingBar android:layout_height="wrap_content" android:isIndicator="true" android:layout_width="wrap_content" style="@style/foodRatingBar_small" android:id="@+id/ratingBar_small"  android:layout_alignBottom="@+id/note_item" android:layout_toRightOf="@+id/date_item"></RatingBar>  
- 
-  </RelativeLayout>
+    <RelativeLayout android:layout_height="90dip" android:layout_width="fill_parent">
+        <LinearLayout android:id="@+id/linearLayout1" android:background="@drawable/photo_frame" android:layout_margin="10dip" android:orientation="horizontal" android:layout_height="70dip" android:layout_width="70dip">
+            <ImageView android:scaleType="centerCrop" android:adjustViewBounds="false" android:layout_margin="4dip" android:layout_height="fill_parent" android:id="@+id/image" android:src="@drawable/her_face" android:layout_gravity="center_vertical" android:layout_width="fill_parent"></ImageView>
+        </LinearLayout>
+        <ImageView android:id="@+id/imageView2" android:src="@drawable/location_icon" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_centerVertical="true" android:layout_alignLeft="@+id/imageView3"></ImageView>
+        <ImageView android:id="@+id/imageView3" android:src="@drawable/notes_icon" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_alignTop="@+id/linearLayout1" android:layout_toRightOf="@+id/linearLayout1" android:layout_marginTop="5dip" android:layout_marginBottom="5dip"></ImageView>
+        <RatingBar style="@style/foodRatingBar_small" android:id="@+id/ratingBar_small" android:isIndicator="true" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_alignTop="@+id/imageView1" android:layout_alignParentRight="true" android:layout_marginRight="5dip"></RatingBar>
+        <TextView android:textSize="12dip" android:id="@+id/note_item" android:layout_height="wrap_content" android:layout_width="wrap_content" android:maxLines="1" android:textColor="#ffffff" android:text="Add note..." android:layout_alignTop="@+id/imageView3" android:layout_alignLeft="@+id/address_item"></TextView>
+        <ImageView android:id="@+id/imageView1" android:src="@drawable/date_icon" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/address_item" android:layout_alignLeft="@+id/imageView2" android:layout_marginTop="7dip" android:layout_marginBottom="5dip"></ImageView>
+        <TextView android:textSize="12dip" android:id="@+id/address_item" android:layout_height="wrap_content" android:layout_width="wrap_content" android:maxLines="1" android:textColor="#818181" android:text="Prdelovice 12, Brno - mesto 7369 01" android:layout_alignTop="@+id/imageView2" android:layout_toRightOf="@+id/imageView2" android:layout_marginLeft="12dp"></TextView>
+        <TextView android:textSize="12dip" android:id="@+id/date_item" android:layout_height="wrap_content" android:layout_width="wrap_content" android:maxLines="1" android:textColor="#818181" android:text="23:23, 22 Jan 2011" android:layout_alignBottom="@+id/imageView1" android:layout_alignLeft="@+id/address_item"></TextView>
+    </RelativeLayout>
   
   
 

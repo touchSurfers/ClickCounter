@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -158,6 +159,27 @@ public class share_class extends Application {
 		}
 	}
 	  
+	  public boolean isPaid(){
+		  
+		  String paid = settings.getString("paid_id","");
+			if(paid.length() == 0){
+				//Not paid user
+				return false;
+			}
+			else{
+				//paid user
+				return true;
+			}
+	  }
+	  
+	  public void setPaid(String paid_id){
+		  
+		  editor.putString("paid_id", paid_id);
+		  editor.commit();
+		 
+	  }
+	  
+	  
 	  public void clearPhotoCache(){
 		 photo_cache.clear();
 	  }
@@ -280,12 +302,19 @@ public class share_class extends Application {
 	        			
 	        		//LOCATION
 	        		//Get actual chick position
-	        		Location actual_location;
+	        		Location actual_location = new Location("");
+	        		actual_location.setLatitude(0.0);
+	        		actual_location.setLongitude(0.0);
+	        		
+	        		try{
+	        		
 	        		LocationManager locationManager;
 	        		
 	        		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);      
 	        		actual_location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-	        		
+	        		}catch(Exception e){
+	        			
+	        		}
 	        		//ID click
 	        		//Get random number and generate 10 digit ID from it
 	        		String ID= "";
@@ -296,7 +325,13 @@ public class share_class extends Application {
         		    setChickID(ID);//Set actual chickID
         		    
         		    //Get current date in readable format and also timestamp
-        		    String date = DateFormat.getDateTimeInstance().format(new Date());
+        		    
+        		    
+        		    //String  date_d = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT,Locale.ENGLISH).format(new Date());
+        		    String  date_d = DateFormat.getDateInstance(DateFormat.MEDIUM,Locale.ENGLISH).format(new Date());
+        		    String time_d = DateFormat.getTimeInstance(DateFormat.SHORT,Locale.ENGLISH).format(new Date());
+        		    String date = time_d+", "+date_d;
+        		  
         		    
         		    //Timestamp
         		    String timestamp_s = "";
@@ -306,9 +341,14 @@ public class share_class extends Application {
         		    
         		    //save this informations to DB
         		    
-        		    
-        		    String lat = Double.toString(actual_location.getLatitude());
-        		    String longi = Double.toString(actual_location.getLongitude());
+        		    String lat = "0.0";
+    		    	String longi = "0.0";
+        		    try{
+        		    	lat = Double.toString(actual_location.getLatitude());
+        		    	longi = Double.toString(actual_location.getLongitude());
+        		    }catch(Exception e){
+        		    	
+        		    }
         		    InsertDB(ID,"","","","","","",date,lat,longi,timestamp_s);
         		   
         		    String address = requestAdress(actual_location.getLatitude(),actual_location.getLongitude());
@@ -322,7 +362,7 @@ public class share_class extends Application {
 	        		sender.nameValuePairs.add(new BasicNameValuePair("id", ID));
 	                sender.nameValuePairs.add(new BasicNameValuePair("lat",lat));
 	                sender.nameValuePairs.add(new BasicNameValuePair("long",longi));
-	                //sender.GetData();
+	                sender.GetData();
 	                
 	        		
 	        	}catch(Exception e){}

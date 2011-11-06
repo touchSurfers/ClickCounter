@@ -13,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
@@ -29,7 +31,11 @@ public class history extends Activity {
 	 share_class sharing_class;
 	 LinkedList<user_item> clicks;
 	 Button start_map;
-	    
+	 ImageButton buy_button;
+	 ImageView buy_dialog;
+	 
+	 int paid = 0;
+	 
 	 private TabHost mTabHost;
 
 		private void setupTabHost() {
@@ -46,6 +52,21 @@ public class history extends Activity {
 	        sharing_class = ((share_class)getApplicationContext());
 	        
 	        start_map = (Button)findViewById(R.id.button_map);
+	        buy_button = (ImageButton)findViewById(R.id.buy_button);
+	        buy_dialog = (ImageView)findViewById(R.id.BuyView1);
+	        
+	        
+	        if(!sharing_class.isPaid()){
+	        	buy_button.setVisibility(View.GONE);
+	        	buy_dialog.setVisibility(View.GONE);
+	        	start_map.setVisibility(View.VISIBLE);
+	        }
+	        else{
+	        	buy_button.setVisibility(View.VISIBLE);
+	        	buy_dialog.setVisibility(View.VISIBLE);
+	        	start_map.setVisibility(View.GONE);
+	        }
+	        
 	        list=(ListView)findViewById(R.id.list);
 	        adapter=new LazyAdapter(this,getApplicationContext());
 	        list.setAdapter(adapter);
@@ -69,6 +90,7 @@ public class history extends Activity {
 		        	//Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
 		        	sharing_class.setPeriod(1);
 		        	adapter.RefreshRow();
+		        	clicks = sharing_class.GetDB(sharing_class.getPeriod());
 		        } 
 		    });
 			
@@ -80,6 +102,7 @@ public class history extends Activity {
 		        	//Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
 		        	sharing_class.setPeriod(2);
 		        	adapter.RefreshRow();
+		        	clicks = sharing_class.GetDB(sharing_class.getPeriod());
 		        } 
 		    });
 			
@@ -92,6 +115,7 @@ public class history extends Activity {
 		        	//Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
 		        	sharing_class.setPeriod(3);
 		        	adapter.RefreshRow();
+		        	clicks = sharing_class.GetDB(sharing_class.getPeriod());
 		        } 
 		    });
 			
@@ -103,9 +127,11 @@ public class history extends Activity {
 		        	//Toast.makeText(history.this, mTabHost.getCurrentTabTag(), Toast.LENGTH_SHORT).show();
 		        	sharing_class.setPeriod(4);
 		        	adapter.RefreshRow();
+		        	clicks = sharing_class.GetDB(sharing_class.getPeriod());
 		        } 
 		    });
 	        
+			
 	        list.setOnItemClickListener(new OnItemClickListener() {
 	        	@Override
 	        	public void onItemClick(AdapterView<?> a, View v, int position, long id) {
@@ -143,6 +169,16 @@ public class history extends Activity {
 	        }
 	       });
 	       
+	       buy_button.setOnClickListener(new View.OnClickListener() {  
+	            public void onClick(View v) {  
+	              	 
+	            	//Start BUY activity
+	            	Intent i = new Intent().setClass(history.this, com.billing.BillingActivity.class);
+	             	startActivity(i);
+	            	
+	            }  
+	        });
+	       
 	       start_map.setOnClickListener(new View.OnClickListener() {  
 	            public void onClick(View v) {  
 	              	 
@@ -172,6 +208,7 @@ public class history extends Activity {
 	    public void onResume()
 	    {
 	        adapter.RefreshRow();
+	        clicks = sharing_class.GetDB(sharing_class.getPeriod());
 	        super.onResume();
 	    }
 	 

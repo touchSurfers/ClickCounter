@@ -4,6 +4,7 @@ package com.helpers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -11,6 +12,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.widget.ImageView;
 
 import com.chick.R;
@@ -112,10 +115,34 @@ public class ImageLoader {
                 scale*=2;
             }
             
+            int orientation = 0;
+            try {
+				ExifInterface exif = new ExifInterface(f.getAbsolutePath());
+				
+				orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+				
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            
             //decode with inSampleSize
             BitmapFactory.Options o2 = new BitmapFactory.Options();
             o2.inSampleSize=scale;
-            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+            
+            if(orientation == 6){
+	            Matrix matrix = new Matrix();
+				matrix.postRotate(90);
+				return Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), matrix, true);
+	        }
+            else{
+            	return b;
+            }
+            
+            
+            
         } catch (FileNotFoundException e) {}
         return null;
     }

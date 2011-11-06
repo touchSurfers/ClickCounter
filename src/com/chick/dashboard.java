@@ -88,37 +88,22 @@ public class dashboard extends Activity {
            	  
             	//TODO
 
-            	
-            	//List radit naopak
-            	//doresit zobrazeni listu
-            	//datumy do hezkeho formatu
-            	//Taby nahore resize
-            	
-            	//Vlastni ratingBarr
-            	
-            	//Omezit vsechny textview v listu
-            	
-            	//Num of stars android:numStars="5" 
-            	
-            	//Maps?? co tam bude navic?
-            	
-            	
-            	//udelat PHP server
-            	//Prepocitavat num of chicks v mape se zoomem, cim dal tim snizuju presnost a zaokrouhluju
 
-            	//OPTIMALIZACE****
-            	//try catch
-            	//If timestamp is OLD (10 minutes) else return with old jsno_class GetData()
-            	//Loading progress for images and map
-            	//Reset button animovat
-            	//Podle : http://mobile.tutsplus.com/tutorials/android/android-gesture/
             	
+            	//Payment logiku
+            	//Rozchodit in-app payment
+            	//udelat payment dialog lehce pruhledny
             	
-            	//BUGS****
-            	//ochrana kdyz naklikas hodne obrazku
-            	//pri prechodu mezi taby dochazi k errorum - nesedi ID
-            	//Fotka je v listu obracene nez v profile
-            	//opravena adresa se nepromitne do listu hned
+            	//Co jeste dat do mapy? - modal o nakupu a pak modal s poctem chicks kolem
+            	
+            	//notifikace jako visit RoockStars.com, get PRO
+            	//server
+            	
+            	//front obrazovka - ukazatel casu
+            	//Po stisknuti MENU v listu vyjede toast ve kterem bude pocet Chicks v listu
+            	//v mape dodelat zobrazeni cisla poctu chicks
+            	//Mapa - po kliknuti na pin, otevrit profil ,pokud je pinu vic (agregace, tak modal okno s Listem)
+            	//Ukladat fotky do zvlastni galerie?/slozky?
             	
             	
             	//IN APP****
@@ -127,18 +112,47 @@ public class dashboard extends Activity {
             	//Filtr funkci podle stavu zaplaceni app
             	//pridat paid/notpaid promenou
             	//notification
+            	//http://developer.android.com/guide/market/billing/billing_integrate.html
+            	
+            	//Pridat iAd (List,Mapa) AZ PO PUBLISH (AdMob.com xkucht04)
             	
             	
+            	//BUGS****
+            	//ochrana kdyz naklikas hodne obrazku
+            	
+            
+            	
+            	
+            	
+            	//udelat PHP server
+            	//Rozchodit napojeni na server
+            	
+
+            	
+            	//OPTIMALIZACE****
+            	//try catch
+            	//If timestamp is OLD (10 minutes) else return with old jason_class GetData()
+            	//Loading progress for images and map
+            	//Reset button animovat
+            	//Podle : http://mobile.tutsplus.com/tutorials/android/android-gesture/
+            	
+
             	//STYLE***
+            	//profile vrch
+            	//pismo
+            	//ikonky
+            	//tlacitko mapa
+            
+            
+            	//Taby nahore resize
+            	//Vybrat vhodny avatar
             	//prodat kompasek do vsech maps
             	//Zvuk tlacitek http://www.mybringback.com/tutorial-series/531/android-the-basics-11-button-sound-review-final/
-            	//vrch v notes 
+           
             	//obrazek zesedly pokud neni zadny v profilu
-            	//Navrhnout add notes button na hlavni stranku
-            	//Rozsvitit add notes button pokud je aktivni
+            	//Rozsvitit aktivni buttony
             	//resize
-            	//v mape dodelat zobrazeni cisla poctu chicks
-            	
+
             	//dodelat vsechny TODO v celem solution          	
             }  
         });
