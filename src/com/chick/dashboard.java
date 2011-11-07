@@ -3,9 +3,13 @@ package com.chick;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +18,7 @@ public class dashboard extends Activity {
 	
 	share_class sharing_class;
 	    TextView counter;
+	    TextView clock_view;
    		ImageButton chickPlus;
    		ImageButton chickList;
    		ImageButton chickNotes;
@@ -27,8 +32,13 @@ public class dashboard extends Activity {
    		ImageView num_4;
    		ImageView num_5;
    		
+   		LocationManager locationManager;
    		
+   		private static final long MINIMUM_DISTANCE_CHANGE_FOR_UPDATES = 1; //metru
+   		private static final long MINIMUM_TIME_BETWEEN_UPDATES = 1000; //milis
    		
+   		private Handler mHandler ;
+   		long mStartTime;
    		
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 145584;
 	
@@ -44,6 +54,7 @@ public class dashboard extends Activity {
     	chickNotes = (ImageButton) findViewById(R.id.chick_add);
     	chickMap = (ImageButton) findViewById(R.id.chick_list);
     	slider_button = (com.UI.SliderUI) findViewById(R.id.slider_button);
+    	clock_view = (TextView) findViewById(R.id.clock_view);
     	
     	num_1 = (ImageView) findViewById(R.id.image_num_1);
     	num_2 = (ImageView) findViewById(R.id.image_num_2);
@@ -52,15 +63,25 @@ public class dashboard extends Activity {
     	num_5 = (ImageView) findViewById(R.id.image_num_5);
     	
         sharing_class = ((share_class)getApplicationContext());
+        mHandler = new Handler();
+      //Start geolocation
+		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);      
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,MINIMUM_TIME_BETWEEN_UPDATES,MINIMUM_DISTANCE_CHANGE_FOR_UPDATES, new GeoUpdateHandler());
+        Location last_loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        sharing_class.setLocation(last_loc);
+        sharing_class.setAddress(  sharing_class.requestAdress( last_loc.getLatitude() ,last_loc.getLongitude() ) );
         
-       // ResetCounter();
-        //sharing_class.DeleteDB();
+
+        	
+        InitCounter();//Musi byt volany jako prvni
         
-        InitCounter();
+        
         if(sharing_class.getChickCount() < 1){
         	chickNotes.setEnabled(false);
         }
         
+        mHandler.removeCallbacks(mUpdateTimeTask);
+        mHandler.postDelayed(mUpdateTimeTask, 100);
         //slider_button
 
        
@@ -77,6 +98,7 @@ public class dashboard extends Activity {
         chickPlus.setOnClickListener(new View.OnClickListener() {  
             public void onClick(View v) {  
    
+
             	IncrementCounter();
             	
             	if(sharing_class.getChickCount() > 0){
@@ -90,17 +112,20 @@ public class dashboard extends Activity {
 
 
             	
+            	//Spravne znicit timer http://android-developers.blogspot.com/2007/11/stitch-in-time.html
+            	//pridat onResume a onEnd metody do dashboard a zastavit/rozbehnout v nich timer
             	//Payment logiku
             	//Rozchodit in-app payment
-            	//udelat payment dialog lehce pruhledny
             	
-            	//Co jeste dat do mapy? - modal o nakupu a pak modal s poctem chicks kolem
             	
-            	//notifikace jako visit RoockStars.com, get PRO
+            	//Co jeste dat do mapy? - modal s poctem chicks kolem
+            	
+            	//notifikace jako visit US, get PRO
             	//server
             	
-            	//front obrazovka - ukazatel casu
-            	//Po stisknuti MENU v listu vyjede toast ve kterem bude pocet Chicks v listu
+            	//Help ktery se zobrazi na zacatku
+            	
+            	//pocet Chicks v listu
             	//v mape dodelat zobrazeni cisla poctu chicks
             	//Mapa - po kliknuti na pin, otevrit profil ,pokud je pinu vic (agregace, tak modal okno s Listem)
             	//Ukladat fotky do zvlastni galerie?/slozky?
@@ -131,6 +156,7 @@ public class dashboard extends Activity {
             	
             	//OPTIMALIZACE****
             	//try catch
+            	//udelat payment dialog lehce pruhledny
             	//If timestamp is OLD (10 minutes) else return with old jason_class GetData()
             	//Loading progress for images and map
             	//Reset button animovat
@@ -207,13 +233,17 @@ public class dashboard extends Activity {
     	i++;
     	sharing_class.setChickCount(i);
     	SetCounterDisplayIncrement(i);
+    	
+    	if(sharing_class.getChickTimer() == 0){
+    		sharing_class.setChickTimer(System.currentTimeMillis());
+    	}
     }
     
     public void ResetCounter(){
     	resetInitCounter();
     	sharing_class.setChickCount(0);
     	sharing_class.setChickID("");
-    	
+    	sharing_class.setChickTimer(0);
     	if(sharing_class.getChickCount() < 1){
         	chickNotes.setEnabled(false);
         }
@@ -248,6 +278,67 @@ public class dashboard extends Activity {
         return addNulls;
     }
     
+    
+   
+     public class GeoUpdateHandler implements LocationListener {
+
+		@Override
+		public void onLocationChanged(Location location) {	
+		try{
+			
+			//Zjistit adresu
+			sharing_class.setLocation(location);
+			sharing_class.setAddress(  sharing_class.requestAdress( location.getLatitude() ,location.getLongitude() ) );
+			
+			
+		}catch(Exception e){}
+		finally{}		
+		}
+
+		@Override
+		public void onProviderDisabled(String provider) {
+			//Provider disabled by the user. GPS or WIFI turned off	
+			//CheckProvider();
+			
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+			//Provider enabled by the user. GPS or WIFI turned on
+			//CheckProvider();
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			//Provider status changed
+			//CheckProvider();
+		}
+	}// geo listener
+	
+    
+     private Runnable mUpdateTimeTask = new Runnable() {
+    	 public void run() {
+    		   mStartTime = System.currentTimeMillis();
+    	       if(sharing_class.getChickTimer() != 0){
+	    	       long millis = mStartTime - sharing_class.getChickTimer() ;
+	    	       int seconds = (int) (millis / 1000);
+	    	       int minutes = seconds / 60;
+	    	       seconds     = seconds % 60;
+	
+	    	       if (seconds < 10) {
+	    	           clock_view.setText("" + minutes + ":0" + seconds);
+	    	       } else {
+	    	           clock_view.setText("" + minutes + ":" + seconds);            
+	    	       }
+    	       }
+    	       else{
+    	    	   clock_view.setText("0:00");
+    	       }
+    	       final long next_start = SystemClock.uptimeMillis();
+    	       mHandler.postAtTime(this,next_start+1000);
+    	   }
+    	};
+    	
     
 public void SetCounterDisplayInit(int count){
     	

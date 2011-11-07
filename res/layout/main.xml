@@ -47,6 +47,7 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="35dip"
 		android:background="@drawable/front_separator" />
+ <TextView android:id="@+id/clock_view" android:layout_width="wrap_content" android:text="Clock" android:layout_height="wrap_content"></TextView>
 
 
 <RelativeLayout

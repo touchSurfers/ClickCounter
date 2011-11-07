@@ -22,9 +22,9 @@
 	    android:layout_gravity="center_horizontal"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent">
-		<TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textView_date" android:text="TextView" android:layout_alignBottom="@+id/button1" android:layout_alignParentLeft="true" android:layout_marginLeft="16dp"></TextView>
+		<TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textView_date" android:maxLines="1" android:textColor="#818181" android:text="TextView" android:layout_alignBottom="@+id/button1" android:layout_alignParentLeft="true" android:layout_marginLeft="16dp"></TextView>
 		<Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/button_map" android:text="Button" android:layout_alignParentBottom="true" android:layout_alignParentRight="true"></Button>
-		<TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textView_address" android:text="TextView" android:layout_alignParentBottom="true" android:layout_alignLeft="@+id/textView_date"></TextView>
+		<TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textView_address" android:maxLines="1" android:textColor="#818181" android:text="TextView" android:layout_alignParentBottom="true" android:layout_alignLeft="@+id/textView_date"></TextView>
 		</RelativeLayout>
 	</LinearLayout>	
 		
@@ -33,7 +33,7 @@
       android:orientation="horizontal"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_gravity="center_horizontal" android:layout_marginTop="30dip">
+      android:layout_gravity="center_horizontal" android:layout_marginTop="5dip">
 
 <LinearLayout android:layout_width="90dip" android:layout_height="90dip" android:background="@drawable/photo_frame" android:orientation="horizontal" android:layout_margin="3dip">      
 <ImageView android:scaleType="centerCrop" android:adjustViewBounds="false" android:gravity="center_horizontal" android:id="@+id/photo1"  android:src="@drawable/her_face" android:layout_gravity="center_vertical" android:layout_height="fill_parent" android:layout_width="fill_parent" android:layout_margin="4dip"></ImageView>
@@ -58,8 +58,7 @@
       android:numStars="5"
       android:layout_gravity="center_horizontal"
       android:isIndicator="false"
-      style="@style/foodRatingBar"    
-/>  
+      style="@style/foodRatingBar"/>  
 
     
        <TextView android:padding="10dip" android:paddingTop="20dip" android:maxLength="150" android:lines="5" android:background="@drawable/notes_note"  android:text="" android:id="@+id/notes_plus" android:layout_height="133dip" android:layout_width="295dip" android:layout_gravity="center_horizontal"  android:onClick="onClick"                

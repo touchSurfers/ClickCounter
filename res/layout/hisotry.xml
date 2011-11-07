@@ -56,7 +56,7 @@
    </RelativeLayout> 
    
    
-   <Button android:id="@+id/button_map" android:text="show on map" android:layout_width="match_parent" android:layout_height="wrap_content"></Button>
+   <Button android:id="@+id/button_map" android:text="show on map" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
 	
         
 </LinearLayout>

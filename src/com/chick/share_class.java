@@ -13,6 +13,10 @@ import org.apache.http.message.BasicNameValuePair;
 
 import sharing_class.chicks_server;
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
@@ -20,6 +24,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
+import android.widget.RemoteViews;
 
 import com.helpers.data_storage;
 import com.helpers.json_class;
@@ -61,6 +66,8 @@ public class share_class extends Application {
 	Double location_set_lat = 20.0;
 	Double location_set_long = 20.0;
 	
+	private String ActualAddress = "";
+	
 	private String notes_added = "";
 	private LinkedList<String> photo_cache=new LinkedList<String>();
 	
@@ -68,6 +75,8 @@ public class share_class extends Application {
     SQLiteDatabase db;
     json_class sender;
     
+    private NotificationManager mNotificationManager;
+    private int SIMPLE_NOTFICATION_ID;
 	
 	data_storage dbMgr =null;
 	
@@ -179,6 +188,13 @@ public class share_class extends Application {
 		 
 	  }
 	  
+	  public void setAddress(String adr){
+		  ActualAddress = adr;
+	  }
+	  
+	  public String getAddress(){
+		  return ActualAddress;
+	  }
 	  
 	  public void clearPhotoCache(){
 		 photo_cache.clear();
@@ -248,6 +264,15 @@ public class share_class extends Application {
 		    editor.commit();
 	  }
 	  
+	  public Long getChickTimer(){
+	  		return settings.getLong("chick_timer",0);
+	  }
+
+	  public void setChickTimer(long s){
+	    editor.putLong("chick_timer", s);
+	    editor.commit();
+	  }
+	  
 	  public String getChickID(){
 		    
 	  		return settings.getString("chick_id","");
@@ -299,7 +324,8 @@ public class share_class extends Application {
 	        public void run() {
 	        	
 	        	try{	
-	        			
+	        		
+	        		/*
 	        		//LOCATION
 	        		//Get actual chick position
 	        		Location actual_location = new Location("");
@@ -315,6 +341,8 @@ public class share_class extends Application {
 	        		}catch(Exception e){
 	        			
 	        		}
+	        		*/
+	        		
 	        		//ID click
 	        		//Get random number and generate 10 digit ID from it
 	        		String ID= "";
@@ -344,20 +372,20 @@ public class share_class extends Application {
         		    String lat = "0.0";
     		    	String longi = "0.0";
         		    try{
-        		    	lat = Double.toString(actual_location.getLatitude());
-        		    	longi = Double.toString(actual_location.getLongitude());
+        		    	lat = Double.toString(getLocation().getLatitude());
+        		    	longi = Double.toString(getLocation().getLongitude());
         		    }catch(Exception e){
         		    	
         		    }
         		    InsertDB(ID,"","","","","","",date,lat,longi,timestamp_s);
         		   
-        		    String address = requestAdress(actual_location.getLatitude(),actual_location.getLongitude());
+        		    String address = requestAdress(getLocation().getLatitude(),getLocation().getLongitude());
          		   	UpdateDB(ID,"","","","","",address,lat,longi);
         		    
         		    //Send this information to cloud
         		    
         		    sender.nameValuePairs.clear();
-	        		sender.setUrl("http://gi60s.com/save_click.php");
+	        		sender.setUrl("http://app.nearley.com/chick_counter/set.php");
 	        		sender.nameValuePairs.add(new BasicNameValuePair("device_id", getDeviceId()));
 	        		sender.nameValuePairs.add(new BasicNameValuePair("id", ID));
 	                sender.nameValuePairs.add(new BasicNameValuePair("lat",lat));
@@ -477,6 +505,30 @@ public class share_class extends Application {
 			}
 		}	
 			
+	    
+	    //Notifications
+	    public void notify_user(String title, String text){
+	    	try{
+			  mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+			  final Notification notifyDetails = new Notification(R.drawable.icon,"polib si",System.currentTimeMillis());
+			  //notifyDetails.defaults =Notification.DEFAULT_ALL;
+			  notifyDetails.flags |= Notification.FLAG_AUTO_CANCEL;
+			  
+			  CharSequence contentTitle = title;
+			  CharSequence contentText = text;
+
+			  Intent notifyIntent = new Intent(this.getApplicationContext(), dashboard.class);
+
+			  PendingIntent intent =
+			  PendingIntent.getActivity(this, 0,notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+
+			  notifyDetails.setLatestEventInfo(this.getApplicationContext(), contentTitle, contentText, intent);
+
+			  mNotificationManager.notify(SIMPLE_NOTFICATION_ID, notifyDetails);
+	    	}catch(Exception e){
+	    		e.toString();
+	    	}
+		  }	
 	    
 	    
 	  

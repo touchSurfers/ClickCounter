@@ -56,7 +56,7 @@ public class history extends Activity {
 	        buy_dialog = (ImageView)findViewById(R.id.BuyView1);
 	        
 	        
-	        if(!sharing_class.isPaid()){
+	        if(sharing_class.isPaid()){
 	        	buy_button.setVisibility(View.GONE);
 	        	buy_dialog.setVisibility(View.GONE);
 	        	start_map.setVisibility(View.VISIBLE);
@@ -209,6 +209,18 @@ public class history extends Activity {
 	    {
 	        adapter.RefreshRow();
 	        clicks = sharing_class.GetDB(sharing_class.getPeriod());
+	        
+	        if(sharing_class.isPaid()){
+	        	buy_button.setVisibility(View.GONE);
+	        	buy_dialog.setVisibility(View.GONE);
+	        	start_map.setVisibility(View.VISIBLE);
+	        }
+	        else{
+	        	buy_button.setVisibility(View.VISIBLE);
+	        	buy_dialog.setVisibility(View.VISIBLE);
+	        	start_map.setVisibility(View.GONE);
+	        }
+	        
 	        super.onResume();
 	    }
 	 
