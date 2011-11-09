@@ -66,6 +66,7 @@ public class share_class extends Application {
 	Double location_set_lat = 20.0;
 	Double location_set_long = 20.0;
 	
+	private Long LastChickSendTimestamp = 0L;
 	private String ActualAddress = "";
 	
 	private String notes_added = "";
@@ -255,6 +256,17 @@ public class share_class extends Application {
 		  
 	  }
 	  
+	  public long getLastChickSendTimestamp(){
+		  
+		  return LastChickSendTimestamp ;
+	  }
+	  
+	  public void setLastChickSendTimestamp(long timestamp){
+		  
+		   LastChickSendTimestamp = timestamp ;
+	  }
+	  
+	  
 	  public int getChickCount(){
 		  		return settings.getInt("chick_count",0);
 	  }
@@ -325,23 +337,7 @@ public class share_class extends Application {
 	        	
 	        	try{	
 	        		
-	        		/*
-	        		//LOCATION
-	        		//Get actual chick position
-	        		Location actual_location = new Location("");
-	        		actual_location.setLatitude(0.0);
-	        		actual_location.setLongitude(0.0);
-	        		
-	        		try{
-	        		
-	        		LocationManager locationManager;
-	        		
-	        		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);      
-	        		actual_location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-	        		}catch(Exception e){
-	        			
-	        		}
-	        		*/
+	        	
 	        		
 	        		//ID click
 	        		//Get random number and generate 10 digit ID from it
@@ -379,8 +375,9 @@ public class share_class extends Application {
         		    }
         		    InsertDB(ID,"","","","","","",date,lat,longi,timestamp_s);
         		   
-        		    String address = requestAdress(getLocation().getLatitude(),getLocation().getLongitude());
-         		   	UpdateDB(ID,"","","","","",address,lat,longi);
+        		    //String address = requestAdress(getLocation().getLatitude(),getLocation().getLongitude());
+         		   	String address = getAddress();
+        		    UpdateDB(ID,"","","","","",address,lat,longi);
         		    
         		    //Send this information to cloud
         		    
@@ -390,7 +387,12 @@ public class share_class extends Application {
 	        		sender.nameValuePairs.add(new BasicNameValuePair("id", ID));
 	                sender.nameValuePairs.add(new BasicNameValuePair("lat",lat));
 	                sender.nameValuePairs.add(new BasicNameValuePair("long",longi));
-	                sender.GetData();
+	                
+	                if(System.currentTimeMillis()>( getLastChickSendTimestamp() +1000)){
+	                	sender.GetData();
+	                	setLastChickSendTimestamp(System.currentTimeMillis());
+	                }
+	                
 	                
 	        		
 	        	}catch(Exception e){}

@@ -80,9 +80,9 @@ public class dashboard extends Activity {
         	chickNotes.setEnabled(false);
         }
         
-        mHandler.removeCallbacks(mUpdateTimeTask);
-        mHandler.postDelayed(mUpdateTimeTask, 100);
-        //slider_button
+       // mHandler.removeCallbacks(mUpdateTimeTask);
+       // mHandler.postDelayed(mUpdateTimeTask, 100);
+       //slider_button
 
        
         slider_button.setOnColorChangedListener(new com.UI.SliderUI.OnColorChangedListener() {
@@ -112,13 +112,15 @@ public class dashboard extends Activity {
 
 
             	
-            	//Spravne znicit timer http://android-developers.blogspot.com/2007/11/stitch-in-time.html
-            	//pridat onResume a onEnd metody do dashboard a zastavit/rozbehnout v nich timer
+           
+            	//resize odesilanych fotek, pak do base64 formatu
+            	
+            	//Galerie v mape, tahani fotek z URLs
+            	
+            	//Google analytics
             	//Payment logiku
             	//Rozchodit in-app payment
-            	
-            	
-            	//Co jeste dat do mapy? - modal s poctem chicks kolem
+            	//Udelat statistics activity
             	
             	//notifikace jako visit US, get PRO
             	//server
@@ -128,7 +130,7 @@ public class dashboard extends Activity {
             	//pocet Chicks v listu
             	//v mape dodelat zobrazeni cisla poctu chicks
             	//Mapa - po kliknuti na pin, otevrit profil ,pokud je pinu vic (agregace, tak modal okno s Listem)
-            	//Ukladat fotky do zvlastni galerie?/slozky?
+            
             	
             	
             	//IN APP****
@@ -157,13 +159,14 @@ public class dashboard extends Activity {
             	//OPTIMALIZACE****
             	//try catch
             	//udelat payment dialog lehce pruhledny
-            	//If timestamp is OLD (10 minutes) else return with old jason_class GetData()
+            	//Prijem chicks - If timestamp is OLD (10 minutes) else return with old jason_class GetData()
             	//Loading progress for images and map
-            	//Reset button animovat
-            	//Podle : http://mobile.tutsplus.com/tutorials/android/android-gesture/
+            	//Reset button animovat Podle : http://mobile.tutsplus.com/tutorials/android/android-gesture/
+            	//
             	
 
             	//STYLE***
+            	//Prechody mezi activitama
             	//profile vrch
             	//pismo
             	//ikonky
@@ -225,6 +228,25 @@ public class dashboard extends Activity {
             	
             }  
         });
+        
+    }
+    
+    @Override
+    public void onResume() {
+    	
+    	//Start timer thread
+    	mHandler.removeCallbacks(mUpdateTimeTask);
+        mHandler.postDelayed(mUpdateTimeTask, 100);
+        super.onResume();
+        
+    }
+    
+    @Override
+    public void onStop() {
+    	
+    	//Stop timer thread
+    	mHandler.removeCallbacks(mUpdateTimeTask);
+        super.onStop();
         
     }
     
