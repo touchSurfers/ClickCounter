@@ -18,4 +18,9 @@
 	<declare-styleable name="CompoundButton">
 		<attr name="android:button" />
 	</declare-styleable>
+	
+	 <declare-styleable name="HelloGallery">
+        <attr name="android:galleryItemBackground" />
+    </declare-styleable>
+    
 </resources>

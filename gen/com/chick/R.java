@@ -189,7 +189,7 @@ public final class R {
         public static final int button2=0x7f070004;
         public static final int button_map=0x7f070009;
         public static final int buy_button=0x7f070008;
-        public static final int camera_button=0x7f07002a;
+        public static final int camera_button=0x7f07002b;
         public static final int chick_add=0x7f07001a;
         public static final int chick_list=0x7f07001e;
         public static final int chick_map_button=0x7f07001d;
@@ -198,7 +198,8 @@ public final class R {
         public static final int clock_view=0x7f07001c;
         public static final int date_item=0x7f070012;
         public static final int drag=0x7f070021;
-        public static final int edit_button=0x7f07002b;
+        public static final int edit_button=0x7f07002c;
+        public static final int gallery=0x7f070022;
         public static final int image=0x7f07000c;
         public static final int imageView1=0x7f07000a;
         public static final int imageView2=0x7f07000d;
@@ -215,19 +216,19 @@ public final class R {
         public static final int map=0x7f070020;
         public static final int note_item=0x7f070010;
         public static final int notes_added=0x7f070002;
-        public static final int notes_plus=0x7f070028;
-        public static final int photo1=0x7f070024;
-        public static final int photo2=0x7f070025;
-        public static final int photo3=0x7f070026;
-        public static final int ratingBar=0x7f070027;
+        public static final int notes_plus=0x7f070029;
+        public static final int photo1=0x7f070025;
+        public static final int photo2=0x7f070026;
+        public static final int photo3=0x7f070027;
+        public static final int ratingBar=0x7f070028;
         public static final int ratingBar_small=0x7f07000f;
         public static final int relativeLayout1=0x7f070014;
-        public static final int separator_action=0x7f070029;
+        public static final int separator_action=0x7f07002a;
         public static final int slider_button=0x7f070013;
-        public static final int tabsLayout=0x7f07002c;
-        public static final int tabsText=0x7f07002d;
-        public static final int textView_address=0x7f070023;
-        public static final int textView_date=0x7f070022;
+        public static final int tabsLayout=0x7f07002d;
+        public static final int tabsText=0x7f07002e;
+        public static final int textView_address=0x7f070024;
+        public static final int textView_date=0x7f070023;
         public static final int view_action=0x7f070005;
     }
     public static final class layout {
@@ -290,5 +291,24 @@ public final class R {
           @attr name android:android_galleryItemBackground
         */
         public static final int Gallery1_android_galleryItemBackground = 0;
+        /** Attributes that can be used with a HelloGallery.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #HelloGallery_android_galleryItemBackground com.chick:android_galleryItemBackground}</code></td><td></td></tr>
+           </table>
+           @see #HelloGallery_android_galleryItemBackground
+         */
+        public static final int[] HelloGallery = {
+            0x0101004c
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.chick.R.attr#android_galleryItemBackground}
+          attribute's value can be found in the {@link #HelloGallery} array.
+          @attr name android:android_galleryItemBackground
+        */
+        public static final int HelloGallery_android_galleryItemBackground = 0;
     };
 }

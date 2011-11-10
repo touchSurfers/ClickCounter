@@ -134,7 +134,7 @@ public class notes extends Activity {
           	 
         		sharing_class.map_changed_address   = false;
         		try{
-        			String lattt = click.getLat();
+        			
            	sharing_class.setLocation_set(Double.parseDouble(click.getLat()),Double.parseDouble(click.getLong()));
            	Intent i = new Intent().setClass(notes.this, chicks_map_activity.class);
             startActivity(i);
@@ -155,16 +155,7 @@ public class notes extends Activity {
         		   StartCamera();
         	   }
         	   else{
-        	   /*
-        	   File photo = new File(Environment.getExternalStorageDirectory()+"/ChickCounter", sharing_class.getPhotoCache(0));
-        	
-        	   //Intent intent = new Intent(Intent.ACTION_VIEW,Uri.fromFile(photo));
-        	   Intent intent = new Intent();
-        	   intent.setAction(android.content.Intent.ACTION_VIEW);
-        	   intent.setDataAndType(Uri.fromFile(photo), "image/jpg");
-        	   
-        	   startActivity(intent);
-        	   */
+        
         		   
         	   Intent i = new Intent().setClass(notes.this, Image_activity.class);
                startActivity(i);
@@ -285,6 +276,8 @@ public class notes extends Activity {
         	//load image in view
         	
         	sharing_class.addPhotoCache(sharing_class.getChickPhoto());
+        	//Start sending image
+        	sharing_class.ImageSendThread(sharing_class.getChickPhoto());
         	view_notes(click);
         }
         else{

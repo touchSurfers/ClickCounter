@@ -118,10 +118,10 @@ public class ImageLoader {
             int orientation = 0;
             try {
 				ExifInterface exif = new ExifInterface(f.getAbsolutePath());
-				
+
 				orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-				
-				
+
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

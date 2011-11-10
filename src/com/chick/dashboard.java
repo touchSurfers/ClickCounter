@@ -48,7 +48,7 @@ public class dashboard extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-     
+     try{
     	chickPlus = (ImageButton) findViewById(R.id.chick_plus);
     	chickList = (ImageButton) findViewById(R.id.chick_map_button);
     	chickNotes = (ImageButton) findViewById(R.id.chick_add);
@@ -80,16 +80,20 @@ public class dashboard extends Activity {
         	chickNotes.setEnabled(false);
         }
         
-       // mHandler.removeCallbacks(mUpdateTimeTask);
-       // mHandler.postDelayed(mUpdateTimeTask, 100);
-       //slider_button
+     }catch(Exception e){
+    	 e.toString();
+     }
 
        
         slider_button.setOnColorChangedListener(new com.UI.SliderUI.OnColorChangedListener() {
 
          @Override
            public void onResetHit(View v) {
+        	try{ 
         	    ResetCounter();
+        	 }catch(Exception e){
+            	 e.toString();
+             }
                 //sharing_class.DeleteDB();
            }
         });
@@ -98,7 +102,7 @@ public class dashboard extends Activity {
         chickPlus.setOnClickListener(new View.OnClickListener() {  
             public void onClick(View v) {  
    
-
+              try{	
             	IncrementCounter();
             	
             	if(sharing_class.getChickCount() > 0){
@@ -108,14 +112,23 @@ public class dashboard extends Activity {
             	//Run thread Insert click to sql and send to cloud
             	sharing_class.InsertThread();
            	  
+              }catch(Exception e){
+             	 e.toString();
+              }
             	//TODO
 
 
             	
            
-            	//resize odesilanych fotek, pak do base64 formatu
+              //Anomace zobrazeni galeri http://udinic.wordpress.com/2011/09/03/expanding-listview-items/
             	
-            	//Galerie v mape, tahani fotek z URLs
+            	//Galerie v mape z serveru, tahani fotek z URLs
+              //Galerii v mape z DB, udelat pro ni zvlast akorat jiny adapter
+             // Bug v adapteru pro galerii, nezobrazuji se fotky na aktivnich view
+              
+              //Misto Imageview activity udelat v notes galerii
+              
+              //sepsat dokumentaci
             	
             	//Google analytics
             	//Payment logiku
@@ -154,6 +167,7 @@ public class dashboard extends Activity {
             	//udelat PHP server
             	//Rozchodit napojeni na server
             	
+                //Prijem obrazku podle http://blog.sptechnolab.com/2011/03/09/android/android-upload-image-to-server/
 
             	
             	//OPTIMALIZACE****
@@ -172,6 +186,7 @@ public class dashboard extends Activity {
             	//ikonky
             	//tlacitko mapa
             
+                //Nejaka hlaska jako uploading chick to server
             
             	//Taby nahore resize
             	//Vybrat vhodny avatar
@@ -191,11 +206,14 @@ public class dashboard extends Activity {
            	 
             	 
             	//Start history activity
-            	
+            try{	
             	sharing_class.clearPhotoCache();
             	Intent i = new Intent().setClass(dashboard.this, history.class);
              	startActivity(i);
              	
+            }catch(Exception e){
+           	 e.toString();
+            }
             	
             	
             }  
@@ -204,12 +222,15 @@ public class dashboard extends Activity {
         chickNotes.setOnClickListener(new View.OnClickListener() {  
             public void onClick(View v) {  
            	 
-            	 
+            try{
             	//Start notes activity
             	sharing_class.clearPhotoCache();
             	sharing_class.setChickSelected(sharing_class.getChickID());
             	Intent i = new Intent().setClass(dashboard.this, notes.class);
              	startActivity(i);
+            }catch(Exception e){
+           	 e.toString();
+            }
             	
             	
             }  
@@ -219,10 +240,13 @@ public class dashboard extends Activity {
             public void onClick(View v) {  
            	 
             	 
-            	
+            try{	
             	
             	Intent i = new Intent().setClass(dashboard.this, chicks_map_activity2.class);
              	startActivity(i);
+            }catch(Exception e){
+           	 e.toString();
+            }
             	
             	
             	

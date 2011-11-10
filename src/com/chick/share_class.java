@@ -1,8 +1,13 @@
 package com.chick;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,13 +24,17 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.ExifInterface;
 import android.os.Handler;
-import android.widget.RemoteViews;
 
+import com.billing.util.Base64;
 import com.helpers.data_storage;
 import com.helpers.json_class;
 import com.helpers.user_item;
@@ -69,6 +78,10 @@ public class share_class extends Application {
 	private Long LastChickSendTimestamp = 0L;
 	private String ActualAddress = "";
 	
+	String send_bitmap;
+	
+	public ArrayList<String> photos_gallery=new ArrayList<String>();
+	
 	private String notes_added = "";
 	private LinkedList<String> photo_cache=new LinkedList<String>();
 	
@@ -86,10 +99,18 @@ public class share_class extends Application {
 	  {
 	  super.onCreate();
 	  
+	  photos_gallery.add("http://a5.sphotos.ak.fbcdn.net/photos-ak-snc1/v1939/169/99/1375196364/n1375196364_197923_6914.jpg");
+	  photos_gallery.add("http://a5.sphotos.ak.fbcdn.net/photos-ak-snc1/v1939/169/99/1375196364/n1375196364_197923_6914.jpg");
+	  photos_gallery.add("http://a5.sphotos.ak.fbcdn.net/photos-ak-snc1/v1939/169/99/1375196364/n1375196364_197923_6914.jpg");
+	  photos_gallery.add("http://a5.sphotos.ak.fbcdn.net/photos-ak-snc1/v1939/169/99/1375196364/n1375196364_197923_6914.jpg");
+	  photos_gallery.add("http://a5.sphotos.ak.fbcdn.net/photos-ak-snc1/v1939/169/99/1375196364/n1375196364_197923_6914.jpg");
+	  photos_gallery.add("http://a5.sphotos.ak.fbcdn.net/photos-ak-snc1/v1939/169/99/1375196364/n1375196364_197923_6914.jpg");
+	  
 	      settings = getSharedPreferences(PREFS_NAME, 0);	
 	      editor = settings.edit();
 	      InitDB();
 	      sender = new json_class();
+	     
 	  }
 	  
 	  @Override
@@ -324,6 +345,11 @@ public class share_class extends Application {
 	    editor.commit();
 	  }
 	  
+	  
+	  
+	 
+	  
+	  
 	  public void InsertThread(){
 		  
 		  ControlThread = new Thread(null, InsertThreadProc, "InsertThread");
@@ -400,6 +426,118 @@ public class share_class extends Application {
 	              
 	        }//run
 	    };
+	    
+	    
+	    public void ImageSendThread(String photo_name){
+	    		
+	    		send_bitmap = photo_name;
+			  ControlThread = new Thread(null, ImageThreadProc, "ImageThread");
+			  ControlThread.start();
+		  }
+	    
+	    Runnable ImageThreadProc = new Runnable() { //Resize and sends given image to server
+	        public void run() {
+	        	
+	        	try{	
+	        		//Load image from SD
+	        		File myDir=new File(android.os.Environment.getExternalStorageDirectory(),"ChickCounter");
+	                File f=new File(myDir, send_bitmap);
+	                //from SD cache
+	                Bitmap b = decodeFile(f);
+	        		
+	        		//Resize image
+	        		final int h = 240; // height in pixels
+	        		final int w = 400; // width in pixels    
+
+	                int width_tmp=b.getWidth(), height_tmp=b.getHeight();
+	                int scale=1;
+	                while(true){
+	                    if(width_tmp<h || height_tmp<w)
+	                        break;
+	                    width_tmp/=2;
+	                    height_tmp/=2;
+	                    scale*=2;
+	                }
+	        		
+	        		Bitmap scaled_photo = Bitmap.createScaledBitmap(b, width_tmp, height_tmp,true);
+	        		
+	        		ByteArrayOutputStream bao = new ByteArrayOutputStream();
+	        		scaled_photo.compress(Bitmap.CompressFormat.JPEG, 80, bao);
+	        		
+	        		//Code bitmap to base64
+	        		byte [] ba = bao.toByteArray();
+	        		String done_image=Base64.encode(ba);
+
+	        		//Get current location
+	        		String lat = "0.0";
+    		    	String longi = "0.0";
+        		    try{
+        		    	lat = Double.toString(getLocation().getLatitude());
+        		    	longi = Double.toString(getLocation().getLongitude());
+        		    }catch(Exception e){
+        		    	
+        		    }
+        		    
+        		    final int size_image = done_image.length();        		    
+        		    
+        		    String id = md5(done_image);
+        		   
+        		    sender.nameValuePairs.clear();
+	        		sender.setUrl("http://app.nearley.com/chick_counter/set.php");
+	        		sender.nameValuePairs.add(new BasicNameValuePair("id",id));
+	        		sender.nameValuePairs.add(new BasicNameValuePair("photo",done_image));
+	                sender.nameValuePairs.add(new BasicNameValuePair("lat",lat));
+	                sender.nameValuePairs.add(new BasicNameValuePair("long",longi));
+	                sender.GetData();
+	                
+	        	}catch(Exception e){
+	        		e.toString();
+	        		int sizeee = 1;
+	        	}
+				
+	              
+	        }//run
+	    };
+	    
+	    private Bitmap decodeFile(File f){
+	        try {
+	        	int orientation = 0;
+	            //decode image size
+	            BitmapFactory.Options o = new BitmapFactory.Options();
+	            o.inJustDecodeBounds = true;
+	            BitmapFactory.decodeStream(new FileInputStream(f),null,o);
+	            
+	            //Find the correct scale value. It should be the power of 2.
+	            
+	            try {
+					ExifInterface exif = new ExifInterface(f.getAbsolutePath());
+					
+					orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+					
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            
+	            //decode with inSampleSize
+	            BitmapFactory.Options o2 = new BitmapFactory.Options();
+	           
+	            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+	            
+	            if(orientation == 6){
+		            Matrix matrix = new Matrix();
+					matrix.postRotate(90);
+					return Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), matrix, true);
+		        }
+	            else{
+	            	return b;
+	            }
+	            
+	        } catch (FileNotFoundException e) {}
+	        return null;
+	    }
+	    
 	    
 	    public void getServerChicks() {
 	       
@@ -531,6 +669,8 @@ public class share_class extends Application {
 	    		e.toString();
 	    	}
 		  }	
+	    
+	    
 	    
 	    
 	  
