@@ -32,28 +32,18 @@ import com.helpers.user_item;
 public class notes extends Activity {
 	
 	share_class sharing_class;
-	 EditText notes;
-	 ImageView  photo1;
-	 ImageView  photo2;
-	 ImageView  photo3;
+	 
+	
 	 ImageButton camera;
 	 Button map;
-	 ImageButton edittext;
-	 TextView notes_plus;
-	 
-	 TextView notes_address;
+     TextView notes_address;
 	 TextView notes_date;
-	 
 	 String actual_id;
 	 user_item click;
 	 String new_name;
-	 RatingBar ratingBar;
-	 Handler m_handler; 
-	 
+	 Handler m_handler;  
 	 public static int TAKE_IMAGE = 111;
-	
-	
-		
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,15 +52,12 @@ public class notes extends Activity {
         
         try{
        
-       photo1 = (ImageView ) findViewById(R.id.photo1);
-       photo2 = (ImageView ) findViewById(R.id.photo2);
-       photo3 = (ImageView ) findViewById(R.id.photo3);
-       ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+       
        notes_address = (TextView ) findViewById(R.id.textView_address);
   	   notes_date = (TextView ) findViewById(R.id.textView_date);
        
        map = (Button)findViewById(R.id.button_map);
-       notes_plus = (TextView)findViewById(R.id.notes_plus);
+       
        
        camera = (ImageButton) findViewById(R.id.camera_button);
        sharing_class = ((share_class)getApplicationContext());
@@ -105,19 +92,7 @@ public class notes extends Activity {
 	    view_notes(click);
        
 	    
-	    notes_plus.setOnClickListener(new View.OnClickListener() {  
-            public void onClick(View v) {  
-           	 
-            	 
-            	//Start history activity
-            
-            	
-            	sharing_class.SetNote(click.getNotes().toString());
-            	Intent i = new Intent().setClass(notes.this, Editbox_activity.class);
-             	startActivity(i);
-            	
-            }  
-        });
+	   
 	    
        //START CAMERA button listener
        camera.setOnClickListener(new View.OnClickListener() {  
@@ -131,8 +106,7 @@ public class notes extends Activity {
        //StartMap
        map.setOnClickListener(new View.OnClickListener() {  
            public void onClick(View v) {  
-          	 
-        		sharing_class.map_changed_address   = false;
+
         		try{
         			
            	sharing_class.setLocation_set(Double.parseDouble(click.getLat()),Double.parseDouble(click.getLong()));
@@ -147,6 +121,7 @@ public class notes extends Activity {
        });
      //START CAMERA button listener
   
+       /*
        photo1.setOnClickListener(new View.OnClickListener() {  
            public void onClick(View v) {  
           	 
@@ -166,53 +141,8 @@ public class notes extends Activity {
         	   }
            }  
        });
+       */
        
-       photo2.setOnClickListener(new View.OnClickListener() {  
-           public void onClick(View v) {  
-          	 
-        	   try{
-        	   if(sharing_class.getPhotoCache(1).length()<1){
-        		   StartCamera();
-        	   }
-        	   else{
-        	   Intent i = new Intent().setClass(notes.this, Image_activity.class);
-            	startActivity(i);
-        	   }     	
-        	   }catch(Exception e){
-        		   e.getLocalizedMessage();
-        	   }
-           }  
-       });
-       
-       photo3.setOnClickListener(new View.OnClickListener() {  
-           public void onClick(View v) {  
-          	 
-        	   try{
-        	   if(sharing_class.getPhotoCache(2).length()<1){
-        		   StartCamera();
-        	   }
-        	   else{
-        	   Intent i = new Intent().setClass(notes.this, Image_activity.class);
-            	startActivity(i);
-        	   }      	
-        	   }catch(Exception e){
-        		   e.getLocalizedMessage();
-        	   }
-           }  
-       });
-       
-       
-        
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-			
-			@Override
-			public void onRatingChanged(RatingBar ratingBar, float rating,
-					boolean fromUser) {
-				
-				// TODO Auto-generated method stub
-				save_notes();
-			}
-		});
         
         }catch(Exception e){
         	e.getLocalizedMessage();
@@ -230,7 +160,6 @@ public class notes extends Activity {
     @Override
     public void onResume(){
     	actual_id = sharing_class.getChickSelected();
-    	
     	click = sharing_class.GetItem(actual_id);
     	view_notes(click);
     	super.onResume();
@@ -353,94 +282,23 @@ public class notes extends Activity {
     
     void view_notes(user_item click_in){
     	
-    	if(sharing_class.map_changed_address == true){
-    		sharing_class.map_changed_address = false;
-    		//preulozit nove souradnice
-    		click.setLat(Double.toString(sharing_class.location_set_lat));
-    		click.setLong(Double.toString(sharing_class.location_set_long));
-    		//preulozit novou addressu
-    		
-    		//run thread and get new address
-    		Thread AddressThread = new Thread(null, AddressThreadProc, "AddressThread");
-    		AddressThread.start();
-    		
-    		//notes_address.setText("ADRESA ZMENA") ;
-    	}else{
+    	
     	
     	//Show address
     	notes_address.setText(click_in.getAddress().toString()) ;
-    	}
+    	
     	
     	//Show date
     	notes_date.setText(click_in.getDate().toString());
     	
 
-    	if(sharing_class.GetNote().length()!=0){
-    	    click.setNotes(sharing_class.GetNote().toString());
-    	    sharing_class.SetNote("");
-    	}
-    	
-    	
-        if(click.getNotes().length()!=0){
-        	notes_plus.setText(click.getNotes());
-        }
-        else{
-        	notes_plus.setText("Click to add notes..");
-        	click.setNotes("");
-        }
-        
-        String rating_text = click.getRating();
-        try{
-        ratingBar.setRating(Float.valueOf(rating_text));
-        }catch(Exception e){
-        	e.getLocalizedMessage();
-        }
-    
-    	if(!(sharing_class.countPhotoCache()>0)){
-    		//Init cache
-    		sharing_class.addPhotoCache(click.getPhoto(3));
-    		sharing_class.addPhotoCache(click.getPhoto(2));
-    		sharing_class.addPhotoCache(click.getPhoto(1)); 
-    		
-    	}
-
-    	for(int i=0;i<sharing_class.countPhotoCache();i++){
-			 
-			 if(i == 0){
-				 if(sharing_class.getPhotoCache(0).length()>0){
-				 photo1.setImageBitmap(getBitmap(sharing_class.getPhotoCache(0)));
-				 }
-			 	 }
-			 
-			 if(i == 1){
-				 if(sharing_class.getPhotoCache(1).length()>0){
-				 photo2.setImageBitmap(getBitmap(sharing_class.getPhotoCache(1)));
-				 }
-			 	 }
-			 
-			 if(i == 2){
-				 if(sharing_class.getPhotoCache(2).length()>0){
-				 photo3.setImageBitmap(getBitmap(sharing_class.getPhotoCache(2)));
-				 }
-			 	 }
-		 }
-    	
-    	
     	save_notes();
-      
-        
-    	
-    	
+
     } 
     
     void save_notes(){
     	
-    	//Rating from UI
-    	 Float rate = ratingBar.getRating();
-    	String rating_text = Float.toString(rate);
-        click.setRating(rating_text);
-    	
-    	sharing_class.UpdateDB(actual_id,click.getNotes().toString(),sharing_class.getPhotoCache(0),sharing_class.getPhotoCache(1),sharing_class.getPhotoCache(2), click.getRating(),click.getAddress(),click.getLat(),click.getLong());
+    	sharing_class.UpdateDB(actual_id,click.getAddress(),click.getLat(),click.getLong());
    	    
     }
 

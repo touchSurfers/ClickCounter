@@ -13,14 +13,8 @@ public class data_storage {
 
     private data_helper dbHelper;
 
-    private static final String CLICK_TABLE = "click_dates";
-    
+    private static final String CLICK_TABLE = "chicks";
     private static final String CLICK_ID = "click_id";
-    private static final String CLICK_NOTES = "click_notes";
-    private static final String CLICK_PHOTO1 = "click_1";
-    private static final String CLICK_PHOTO2 = "click_2";
-    private static final String CLICK_PHOTO3 = "click_3";
-    private static final String CLICK_RATING = "rating";
     private static final String CLICK_ADDRESS = "address";
     private static final String CLICK_DATE = "click_date";
     private static final String CLICK_LAT = "click_lat";
@@ -29,12 +23,11 @@ public class data_storage {
     private static final String ORDER_DESC =" ORDER BY CLICK_TIMESTAMP DESC";
     
 
-    private static final String SELECT_CLICKS = "SELECT * FROM " + CLICK_TABLE + " WHERE CLICK_TIMESTAMP > ";
-    private static final String SELECT_ALL_CLICKS = "SELECT * FROM " + CLICK_TABLE;
-    private static final String SELECT_TOP_CLICKS = "SELECT * FROM " + CLICK_TABLE + " WHERE rating = \"5.0\" ORDER BY CLICK_TIMESTAMP DESC";
-    
+   // private static final String SELECT_CLICKS = "SELECT * FROM " + CLICK_TABLE + " WHERE CLICK_TIMESTAMP > ";
+    private static final String SELECT_CLICKS = "SELECT * FROM " + CLICK_TABLE;
+   
     public  data_storage(Context context) {
-        dbHelper = new data_helper(context, CLICK_TABLE, CLICK_ID + " TEXT,"  + CLICK_NOTES + " TEXT," + CLICK_PHOTO1 + " TEXT," + CLICK_PHOTO2 + " TEXT," + CLICK_PHOTO3 + " TEXT,"  + CLICK_RATING + " TEXT,"  + CLICK_ADDRESS + " TEXT," + CLICK_DATE + " TEXT,"  + CLICK_LAT + " TEXT," + CLICK_LONG + " TEXT," + CLICK_TIMESTAMP + " TEXT");
+        dbHelper = new data_helper(context, CLICK_TABLE, CLICK_ID + " TEXT,"  + CLICK_ADDRESS + " TEXT," + CLICK_DATE + " TEXT,"  + CLICK_LAT + " TEXT," + CLICK_LONG + " TEXT," + CLICK_TIMESTAMP + " TEXT");
     }
 
     /**
@@ -43,28 +36,18 @@ public class data_storage {
      * @param stockDesc description of the stock
      * @return success or fail
      */
-    public boolean insert(String Id, String notes,String photo1,String photo2,String photo3,String rating, String address,String date,String lat,String longi,String timestamp) {
+    public boolean insert(String Id, String address,String date,String lat,String longi,String timestamp) {
         try {
-
             SQLiteDatabase sqlite = dbHelper.getWritableDatabase();
-
             ContentValues initialValues = new ContentValues();
 
             initialValues.put(CLICK_ID, Id);
-            initialValues.put(CLICK_NOTES, notes);
-            
-            initialValues.put(CLICK_PHOTO1, photo1);
-            initialValues.put(CLICK_PHOTO2, photo2);
-            initialValues.put(CLICK_PHOTO3, photo3);
-            
-            initialValues.put(CLICK_RATING, rating);
             initialValues.put(CLICK_ADDRESS, address);
-            
             initialValues.put(CLICK_DATE, date);
             initialValues.put(CLICK_LAT, lat);
             initialValues.put(CLICK_LONG, longi);
             initialValues.put(CLICK_TIMESTAMP, timestamp);
-
+            
             sqlite.insert(CLICK_TABLE, null, initialValues);
 
         } catch (SQLException sqlerror) {
@@ -82,7 +65,7 @@ public class data_storage {
      * Get all available clicks
      * @return List of stocks
      */
-    public LinkedList<user_item> getDB(int period) {
+    public LinkedList<user_item> getDB() {
         LinkedList<user_item> clicks = new LinkedList<user_item>();
 
         SQLiteDatabase sqliteDB = dbHelper.getReadableDatabase();
@@ -99,26 +82,15 @@ public class data_storage {
 	    timestamp_day = Long.toString(dtMili_day);
 	    timestamp_week = Long.toString(dtMili_week);
         
-        if(period == 1){
-        	query = SELECT_CLICKS + timestamp_day + ORDER_DESC;
-        }
-        else if(period == 2){
-        	 query = SELECT_CLICKS + timestamp_week + ORDER_DESC;
-        }
-        else if(period == 3){
-        	 query = SELECT_ALL_CLICKS + ORDER_DESC;
-        }
-        else if(period == 4){
-       	 query = SELECT_TOP_CLICKS;
-       }
-        
+        query = SELECT_CLICKS + ORDER_DESC;
+
         Cursor crsr = sqliteDB.rawQuery(query, null);
 
         crsr.moveToFirst();
 
         for (int i = 0; i < crsr.getCount(); i++)
         {
-        	clicks.add(new user_item(crsr.getString(0), crsr.getString(1), crsr.getString(2),crsr.getString(3),crsr.getString(4),crsr.getString(5),crsr.getString(6),crsr.getString(7),crsr.getString(8),crsr.getString(9),crsr.getString(10)));
+        	clicks.add(new user_item(crsr.getString(0), crsr.getString(1), crsr.getString(2),crsr.getString(3),crsr.getString(4),crsr.getString(5)));
 
             crsr.moveToNext();
         }
@@ -137,7 +109,7 @@ public class data_storage {
 
         crsr.moveToFirst();
 
-        click = new user_item(crsr.getString(0), crsr.getString(1), crsr.getString(2),crsr.getString(3),crsr.getString(4),crsr.getString(5),crsr.getString(6),crsr.getString(7),crsr.getString(8),crsr.getString(9),crsr.getString(10));
+        click = new user_item(crsr.getString(0), crsr.getString(1), crsr.getString(2),crsr.getString(3),crsr.getString(4),crsr.getString(5));
 
     	}catch(Exception e){
     		click = null;
@@ -145,29 +117,17 @@ public class data_storage {
         return click;
     }
     
-    public void update(String id,String notes,String photo1,String photo2, String photo3, String rating, String address, String lat, String longi){
+    public void update(String id, String address, String lat, String longi){
     	
     	SQLiteDatabase sqlite = dbHelper.getWritableDatabase();
 
         ContentValues initialValues = new ContentValues();
-
-        
-      
-        initialValues.put(CLICK_NOTES, notes);
-       initialValues.put(CLICK_PHOTO1, photo1);
-       
-        initialValues.put(CLICK_PHOTO2, photo2);
-       initialValues.put(CLICK_PHOTO3, photo3);
-       
-       initialValues.put(CLICK_RATING, rating);
-       initialValues.put(CLICK_ADDRESS, address);
-       
+       initialValues.put(CLICK_ADDRESS, address);    
        initialValues.put(CLICK_LAT, lat);
        initialValues.put(CLICK_LONG, longi);
        
-
         try{
-       int i= sqlite.update(CLICK_TABLE, initialValues, "click_id=?", new String[]{id}); 
+        	int i= sqlite.update(CLICK_TABLE, initialValues, "click_id=?", new String[]{id}); 
         }catch(Exception e){
         	e.getLocalizedMessage();
         }

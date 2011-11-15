@@ -52,9 +52,7 @@ public class LazyAdapter extends BaseAdapter {
     public static class ViewHolder{
         public TextView date;
         public TextView address;
-        public TextView note;
-        public RatingBar rating;
-        public ImageView image;
+       // public ImageView image;
        
     }
 
@@ -66,9 +64,9 @@ public class LazyAdapter extends BaseAdapter {
             holder=new ViewHolder();
             holder.date=(TextView)vi.findViewById(R.id.date_item);
             holder.address=(TextView)vi.findViewById(R.id.address_item);
-            holder.note=(TextView)vi.findViewById(R.id.note_item);
-            holder.image=(ImageView)vi.findViewById(R.id.image);
-            holder.rating = (RatingBar)vi.findViewById(R.id.ratingBar_small);
+            
+           // holder.image=(ImageView)vi.findViewById(R.id.image);
+           
             
             vi.setTag(holder);
         }
@@ -78,45 +76,30 @@ public class LazyAdapter extends BaseAdapter {
        
         holder.date.setText(clicks.get(position).getDate());
         holder.address.setText(clicks.get(position).getAddress());
-        String text_note = clicks.get(position).getNotes();
-        if(text_note.length() == 0){
-        	holder.note.setText("Add note...");
-        }
-        else{
-        	holder.note.setText(text_note);
-        }
         
+
+     //   holder.image.setTag(clicks.get(position).getPhoto(1));
+     //   imageLoader.DisplayImage(clicks.get(position).getPhoto(1), activity, holder.image);
         
-        holder.image.setTag(clicks.get(position).getPhoto(1));
-        imageLoader.DisplayImage(clicks.get(position).getPhoto(1), activity, holder.image);
-        
-        String rating_text = clicks.get(position).getRating();
-        try{
-        	 holder.rating.setRating(Float.valueOf(rating_text));
-        }catch(Exception e){
-        	holder.rating.setRating(0);
-        	rating_text = "";
-        	e.getLocalizedMessage();
-        }
-        rating_text = "";
+
         return vi;
     }
     
     public void addRow(String newRow) {
         
-    	clicks = sharing_class.GetDB(sharing_class.getPeriod());
+    	clicks = sharing_class.GetDB();
         notifyDataSetChanged();
     }
     
     public void DeleteRow() {
         
-    	clicks = sharing_class.GetDB(sharing_class.getPeriod());
+    	clicks = sharing_class.GetDB();
         notifyDataSetChanged();
     }
     
     public void RefreshRow() {
         
-    	clicks = sharing_class.GetDB(sharing_class.getPeriod());
+    	clicks = sharing_class.GetDB();
         notifyDataSetChanged();
     }
     
@@ -125,7 +108,7 @@ public class LazyAdapter extends BaseAdapter {
        
     	
     	//get data from DB , depending on selecten radiobutton
-    	clicks = sharing_class.GetDB(sharing_class.getPeriod());
+    	clicks = sharing_class.GetDB();
         notifyDataSetChanged();
     	
     }

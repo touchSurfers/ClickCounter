@@ -30,25 +30,24 @@ import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.os.Handler;
 
 import com.billing.util.Base64;
 import com.helpers.data_storage;
+import com.helpers.data_storage_photo;
 import com.helpers.json_class;
 import com.helpers.user_item;
-
-
 
 public class share_class extends Application {
 
 	
+	//List of lists for History list agregation
+	public LinkedList<LinkedList> chicks_history = new LinkedList<LinkedList>();
 	
-
+	
 	public LinkedList<chicks_server> chicks_server_map = new LinkedList<chicks_server>();
 	public void chicks_server_map_delete(){
-		
 		//TODO
 		//smycka
 		//chicks_server_map.remove(myObject);
@@ -61,13 +60,16 @@ public class share_class extends Application {
 	SharedPreferences.Editor editor;
 	private static final String TAG = "share_class";
 	
-	 public Handler mHandler;
+	//Handlers for activity X thread communication
+	public Handler mHandler;
+	public Handler mHandler1;
+	public Handler mHandler2;
+	public Handler mHandler3;
 	
 	//Private variables
 
-	 public boolean map_changed_address = false;
-	private int chick_count;
-	private int period = 1;
+
+	
 	private String actual_photo= "";
 	private String actual_selected = "";
 	private Thread ControlThread;
@@ -93,6 +95,7 @@ public class share_class extends Application {
     private int SIMPLE_NOTFICATION_ID;
 	
 	data_storage dbMgr =null;
+	data_storage_photo dbMgr_photo =null;
 	
 	  @Override
 	  public void onCreate()
@@ -109,6 +112,7 @@ public class share_class extends Application {
 	      settings = getSharedPreferences(PREFS_NAME, 0);	
 	      editor = settings.edit();
 	      InitDB();
+	      InitDB_photo();
 	      sender = new json_class();
 	     
 	  }
@@ -117,63 +121,49 @@ public class share_class extends Application {
 	  public void onLowMemory()
 	  {
 	  super.onLowMemory();
-	
 	  }
 	  @Override
 	  public void onTerminate()
 	  {
 	  super.onTerminate();
-	
 	  }
 	  
+	  
+	  
+	  
+	  
+	  //Database operations and managers
 	  public void InitDB(){
-		  
 		 if(dbMgr == null){
 		  dbMgr = new data_storage(getApplicationContext());
-		 }
-		 
-		 
+		 } 
 	  }
 	  
 	  public void DeleteDB(){
-
 			  dbMgr.clear();
-
-		  }
-	  
+	  }
 	  public void DeleteItem(String id){
-
 		  dbMgr.delete(id);
-
 	  }
-	  
-	  public void InsertDB(String id,String notes,String photo1,String photo2,String photo3,String rating,String address,String date,String lat,String longi,String timestamp){
-		  
+	  public void InsertDB(String id,String address,String date,String lat,String longi,String timestamp){
 		  if(dbMgr != null)
-		  dbMgr.insert(id, notes,photo1,photo2,photo3,rating,address,date,lat,longi,timestamp);
-          
+		  dbMgr.insert(id,address,date,lat,longi,timestamp); 
 	  }
 	  
-      public void UpdateDB(String id,String notes,String photo1,String photo2,String photo3, String rating,String address,String lat, String longi){
-		  
+      public void UpdateDB(String id,String address,String lat, String longi){  
 		  if(dbMgr != null)
-		  dbMgr.update(id, notes, photo1, photo2, photo3, rating,address,lat,longi);
-          
+		  dbMgr.update(id, address,lat,longi);  
 	  }
 	  
-	  
-	  public LinkedList<user_item> GetDB(int period_selected){
-		
-		    return dbMgr.getDB(period_selected);
-  
+	  public LinkedList<user_item> GetDB(){
+		    return dbMgr.getDB();
 	  }
 	  
 	  public user_item GetItem(String id){
-			
 			return dbMgr.getItem(id);
-	  
 	  }
 	  
+	  //Generate and store device ID
 	  public String getDeviceId(){
 		  
 		String ID = settings.getString("device_id","");
@@ -190,6 +180,37 @@ public class share_class extends Application {
 		}
 	}
 	  
+	  
+	  //Photo DB 
+	  
+	  //Database operations and managers
+	  public void InitDB_photo(){
+		 if(dbMgr_photo == null){
+		  dbMgr_photo = new data_storage_photo(getApplicationContext());
+		 } 
+	  }
+	  
+	  public void DeleteDB_photo(){
+			  dbMgr_photo.clear();
+	  }
+	  public void DeleteItem_photo(String id){
+		  dbMgr_photo.delete(id);
+	  }
+	  public void InsertDB_photo(String id,String photo,String timestamp){
+		  if(dbMgr_photo != null)
+		  dbMgr_photo.insert(id,photo,timestamp); 
+	  }
+
+	  public LinkedList<user_item> GetDB_photo(){
+		    return dbMgr_photo.getDB();
+	  }
+	  
+	  public user_item GetItem_photo(String id){
+			return dbMgr_photo.getItem(id);
+	  }
+	  
+	  
+	  //Store and read payment
 	  public boolean isPaid(){
 		  
 		  String paid = settings.getString("paid_id","");
@@ -207,9 +228,9 @@ public class share_class extends Application {
 		  
 		  editor.putString("paid_id", paid_id);
 		  editor.commit();
-		 
 	  }
 	  
+	  //Set actual address
 	  public void setAddress(String adr){
 		  ActualAddress = adr;
 	  }
@@ -218,6 +239,21 @@ public class share_class extends Application {
 		  return ActualAddress;
 	  }
 	  
+	  //Location setters and getters
+	  public Location getLocation(){
+		    return my_location;
+	  }
+	  public void setLocation(Location location){
+		   my_location = location;
+	  }
+	  
+	  public void setLocation_set(Double lat, Double longi){
+		  
+		   location_set_lat= lat;
+		   location_set_long= longi;
+	  }
+	  
+	  //Profile functions (delete)
 	  public void clearPhotoCache(){
 		 photo_cache.clear();
 	  }
@@ -234,26 +270,13 @@ public class share_class extends Application {
 			  return notes_added;
       }
 		  
-		  public Location getLocation(){
-			    return my_location;
-		  }
-		  public void setLocation(Location location){
-			   my_location = location;
-		  }
 		  
-		  public void setLocation_set(Double lat, Double longi){
-			  
-			   location_set_lat= lat;
-			   location_set_long= longi;
-		  }
-	  
 	  public void addPhotoCache(String s){
-	try{
-		photo_cache.addFirst(s);
-	}catch(Exception e){
+		  try{
+			  photo_cache.addFirst(s);
+		  }catch(Exception e){
 		
-	}
-		  
+		  }	  
 	  }
 	  
 	  public void addPhotoSCache(LinkedList<String> s){
@@ -277,6 +300,7 @@ public class share_class extends Application {
 		  
 	  }
 	  
+	  //Set and get timestamp (for sending control)
 	  public long getLastChickSendTimestamp(){
 		  
 		  return LastChickSendTimestamp ;
@@ -287,7 +311,6 @@ public class share_class extends Application {
 		   LastChickSendTimestamp = timestamp ;
 	  }
 	  
-	  
 	  public int getChickCount(){
 		  		return settings.getInt("chick_count",0);
 	  }
@@ -297,6 +320,7 @@ public class share_class extends Application {
 		    editor.commit();
 	  }
 	  
+	  //Chick timer
 	  public Long getChickTimer(){
 	  		return settings.getLong("chick_timer",0);
 	  }
@@ -306,10 +330,9 @@ public class share_class extends Application {
 	    editor.commit();
 	  }
 	  
-	  public String getChickID(){
-		    
-	  		return settings.getString("chick_id","");
 	  
+	  public String getChickID(){  
+	  		return settings.getString("chick_id","");
 	  }
 	  
 	  public void setChickPhoto(String s){
@@ -322,67 +345,59 @@ public class share_class extends Application {
 	  
 	  }
 	  
-	  public void setPeriod(int s){
-		    period = s;
-	  }
 	  
-	  public int getPeriod(){
-	  		return period;
-	  }
-	  
+	  /*
+	   * Actual chick selected
+	   * 
+	   */
 	  public void setChickSelected(String s){
 		    actual_selected = s;
 	  }
 	  
 	  public String getChickSelected(){
-		    
 	  		return actual_selected;
-	  
 	  }
 
+	  //If app turned off, store last chick clicked ID
 	  public void setChickID(String s){
 	    editor.putString("chick_id", s);
 	    editor.commit();
 	  }
 	  
+ /*
+  * 
+  * 
+  *  Data senders
+  * 
+  * 
+  */
 	  
-	  
-	 
-	  
-	  
+	  //Insert new chicks to DB and upload info to server
 	  public void InsertThread(){
 		  
 		  ControlThread = new Thread(null, InsertThreadProc, "InsertThread");
 		  ControlThread.start();
 	  }
 	  
-      
-
 	  Runnable InsertThreadProc = new Runnable() {
 	        public void run() {
 	        	
 	        	try{	
-	        		
-	        	
-	        		
 	        		//ID click
 	        		//Get random number and generate 10 digit ID from it
 	        		String ID= "";
 	        		Random RanNum = new Random();
         		    ID = md5(Integer.toString(RanNum.nextInt()));
-        		    ID = ID.substring(0,10);        		    
+        		    ID = ID.substring(0,10); 
         		    
         		    setChickID(ID);//Set actual chickID
-        		    
         		    //Get current date in readable format and also timestamp
-        		    
         		    
         		    //String  date_d = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT,Locale.ENGLISH).format(new Date());
         		    String  date_d = DateFormat.getDateInstance(DateFormat.MEDIUM,Locale.ENGLISH).format(new Date());
         		    String time_d = DateFormat.getTimeInstance(DateFormat.SHORT,Locale.ENGLISH).format(new Date());
         		    String date = time_d+", "+date_d;
         		  
-        		    
         		    //Timestamp
         		    String timestamp_s = "";
         		    long dtMili = System.currentTimeMillis();
@@ -399,11 +414,11 @@ public class share_class extends Application {
         		    }catch(Exception e){
         		    	
         		    }
-        		    InsertDB(ID,"","","","","","",date,lat,longi,timestamp_s);
+        		    InsertDB(ID,"",date,lat,longi,timestamp_s);
         		   
         		    //String address = requestAdress(getLocation().getLatitude(),getLocation().getLongitude());
          		   	String address = getAddress();
-        		    UpdateDB(ID,"","","","","",address,lat,longi);
+        		    UpdateDB(ID,address,lat,longi);
         		    
         		    //Send this information to cloud
         		    
@@ -418,24 +433,28 @@ public class share_class extends Application {
 	                	sender.GetData();
 	                	setLastChickSendTimestamp(System.currentTimeMillis());
 	                }
-	                
-	                
-	        		
+	                	
 	        	}catch(Exception e){}
-				
-	              
 	        }//run
 	    };
+	      
+/*
+ * 
+ * 
+ * Uploade image to stream
+ * 
+ * 
+ */
+//Insert image to DB
 	    
-	    
-	    public void ImageSendThread(String photo_name){
+public void ImageSendThread(String photo_name){
 	    		
-	    		send_bitmap = photo_name;
-			  ControlThread = new Thread(null, ImageThreadProc, "ImageThread");
-			  ControlThread.start();
-		  }
-	    
-	    Runnable ImageThreadProc = new Runnable() { //Resize and sends given image to server
+	   send_bitmap = photo_name;
+	   ControlThread = new Thread(null, ImageThreadProc, "ImageThread");
+	   ControlThread.start();
+      }
+
+    Runnable ImageThreadProc = new Runnable() { //Resize and sends given image to server
 	        public void run() {
 	        	
 	        	try{	
@@ -458,9 +477,8 @@ public class share_class extends Application {
 	                    height_tmp/=2;
 	                    scale*=2;
 	                }
-	        		
+	        
 	        		Bitmap scaled_photo = Bitmap.createScaledBitmap(b, width_tmp, height_tmp,true);
-	        		
 	        		ByteArrayOutputStream bao = new ByteArrayOutputStream();
 	        		scaled_photo.compress(Bitmap.CompressFormat.JPEG, 80, bao);
 	        		
@@ -474,9 +492,7 @@ public class share_class extends Application {
         		    try{
         		    	lat = Double.toString(getLocation().getLatitude());
         		    	longi = Double.toString(getLocation().getLongitude());
-        		    }catch(Exception e){
-        		    	
-        		    }
+        		    }catch(Exception e){}
         		    
         		    final int size_image = done_image.length();        		    
         		    
@@ -492,13 +508,137 @@ public class share_class extends Application {
 	                
 	        	}catch(Exception e){
 	        		e.toString();
-	        		int sizeee = 1;
 	        	}
-				
-	              
-	        }//run
+				   
+	        }// END ImageSendThread
 	    };
 	    
+/*
+ * 
+ * Get chicks from server
+ * 
+ * 
+ */
+	    
+	    
+public void getServerChicks() {
+	       
+	   try{	
+		   
+	        //Get current location
+	        String lat = "0.0";
+    		String longi = "0.0";
+        	   try{
+        	    	lat = Double.toString(getLocation().getLatitude());
+        	    	longi = Double.toString(getLocation().getLongitude());
+        	    }catch(Exception e){ }      		    
+        		    //Send this information to cloud
+        		    
+        		    sender.nameValuePairs.clear();
+	        		sender.setUrl("http://gi60s.com/get_chicks.php");
+	        		sender.nameValuePairs.add(new BasicNameValuePair("device_id", getDeviceId()));
+	                sender.nameValuePairs.add(new BasicNameValuePair("lat",lat));
+	                sender.nameValuePairs.add(new BasicNameValuePair("long",longi));
+	                sender.GetData(share_class.this);
+	 
+	        	}catch(Exception e){}		
+	    }
+	    
+	    
+	    
+/*
+ * 
+ * Notifications
+ * 
+ * 	    
+ */
+
+	    public void notify_user(String title, String text){
+	    	try{
+			  mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+			  final Notification notifyDetails = new Notification(R.drawable.icon,"polib si",System.currentTimeMillis());
+			  //notifyDetails.defaults =Notification.DEFAULT_ALL;
+			  notifyDetails.flags |= Notification.FLAG_AUTO_CANCEL;
+			  
+			  CharSequence contentTitle = title;
+			  CharSequence contentText = text;
+
+			  Intent notifyIntent = new Intent(this.getApplicationContext(), dashboard.class);
+
+			  PendingIntent intent =
+			  PendingIntent.getActivity(this, 0,notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+
+			  notifyDetails.setLatestEventInfo(this.getApplicationContext(), contentTitle, contentText, intent);
+
+			  mNotificationManager.notify(SIMPLE_NOTFICATION_ID, notifyDetails);
+	    	}catch(Exception e){
+	    		e.toString();
+	    	}
+		  }	
+	    
+	   
+	    /* ******* Helper methods ********** */
+	    
+/*
+ * 
+ * request address method	    
+ */
+	    
+	    
+public String requestAdress(Double latitude, Double longitude){
+			
+			Geocoder geocoder = new Geocoder(share_class.this);
+			try {
+				List<Address> addresses = geocoder.getFromLocation( latitude, longitude , 1);
+				
+				if(addresses != null) {
+					   Address returnedAddress = addresses.get(0);
+					   StringBuilder strReturnedAddress = new StringBuilder("");
+					   for(int i=0; i<returnedAddress.getMaxAddressLineIndex(); i++) {
+					    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("");
+					   }
+					
+					     //sharing_class.setAdress(strReturnedAddress.toString());
+					     //adress.setText(strReturnedAddress.toString());
+						    return strReturnedAddress.toString();
+					  }
+					  else{
+						  	return "Address not found";
+					    // sharing_class.setAdress("Searching address..");
+					     //adress.setText("Searching address.."); 
+					  }
+				
+				
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+				return "Address not found";
+			}
+		}	
+
+	    public static final String md5(final String s) {
+	        try {
+	            // Create MD5 Hash
+	            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+	            digest.update(s.getBytes());
+	            byte messageDigest[] = digest.digest();
+	     
+	            // Create Hex String
+	            StringBuffer hexString = new StringBuffer();
+	            for (int i = 0; i < messageDigest.length; i++) {
+	                String h = Integer.toHexString(0xFF & messageDigest[i]);
+	                while (h.length() < 2)
+	                    h = "0" + h;
+	                hexString.append(h);
+	            }
+	            return hexString.toString();
+	     
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return "";
+	    }  
+	 
 	    private Bitmap decodeFile(File f){
 	        try {
 	        	int orientation = 0;
@@ -537,141 +677,10 @@ public class share_class extends Application {
 	        } catch (FileNotFoundException e) {}
 	        return null;
 	    }
-	    
-	    
-	    public void getServerChicks() {
-	       
-	        	try{	
-	        			
-	        		//LOCATION
-	        		//Get actual chick position
-	        		Location actual_location;
-	        		LocationManager locationManager;
-	        		
-	        		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);      
-	        		actual_location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-        		    //Get current date in readable format and also timestamp
-        		    String date = DateFormat.getDateTimeInstance().format(new Date());
-        		    
-        		    //Timestamp
-        		    String timestamp_s = "";
-        		    long dtMili = System.currentTimeMillis();
-        		    dtMili = dtMili/1000;
-        		    timestamp_s = Long.toString(dtMili);        		    
-        		    
-        		    String lat = Double.toString(actual_location.getLatitude());
-        		    String longi = Double.toString(actual_location.getLongitude());
-        		    
-        		    //Send this information to cloud
-        		    
-        		    sender.nameValuePairs.clear();
-	        		sender.setUrl("http://gi60s.com/get_chicks.php");
-	        		sender.nameValuePairs.add(new BasicNameValuePair("device_id", getDeviceId()));
-	                sender.nameValuePairs.add(new BasicNameValuePair("lat",lat));
-	                sender.nameValuePairs.add(new BasicNameValuePair("long",longi));
-	                sender.GetData(share_class.this);
-	                
-	        		
-	        	}catch(Exception e){}
-				
-	    }
-	    
-	    public void GetLastLoc(){
-			  
-			try{  
-			//LOCATION
-	  		//Get actual user location
-	  		
-	  		LocationManager locationManager;
-	  		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);      
-	  		my_location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-			}catch(Exception e){}
-			
-		  }
-	    
-	    public static final String md5(final String s) {
-	        try {
-	            // Create MD5 Hash
-	            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-	            digest.update(s.getBytes());
-	            byte messageDigest[] = digest.digest();
-	     
-	            // Create Hex String
-	            StringBuffer hexString = new StringBuffer();
-	            for (int i = 0; i < messageDigest.length; i++) {
-	                String h = Integer.toHexString(0xFF & messageDigest[i]);
-	                while (h.length() < 2)
-	                    h = "0" + h;
-	                hexString.append(h);
-	            }
-	            return hexString.toString();
-	     
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	        return "";
-	    }  
 	 
-	 
-	    public String requestAdress(Double latitude, Double longitude){
-			
-			Geocoder geocoder = new Geocoder(share_class.this);
-			try {
-				List<Address> addresses = geocoder.getFromLocation( latitude, longitude , 1);
-				
-				if(addresses != null) {
-					   Address returnedAddress = addresses.get(0);
-					   StringBuilder strReturnedAddress = new StringBuilder("");
-					   for(int i=0; i<returnedAddress.getMaxAddressLineIndex(); i++) {
-					    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("");
-					   }
-					
-					     //sharing_class.setAdress(strReturnedAddress.toString());
-					     //adress.setText(strReturnedAddress.toString());
-						    return strReturnedAddress.toString();
-					  }
-					  else{
-						  	return "Address not found";
-					    // sharing_class.setAdress("Searching address..");
-					     //adress.setText("Searching address.."); 
-					  }
-				
-				
-			} catch (IOException e) {
-				
-				e.printStackTrace();
-				return "Address not found";
-			}
-		}	
-			
-	    
-	    //Notifications
-	    public void notify_user(String title, String text){
-	    	try{
-			  mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-			  final Notification notifyDetails = new Notification(R.drawable.icon,"polib si",System.currentTimeMillis());
-			  //notifyDetails.defaults =Notification.DEFAULT_ALL;
-			  notifyDetails.flags |= Notification.FLAG_AUTO_CANCEL;
-			  
-			  CharSequence contentTitle = title;
-			  CharSequence contentText = text;
-
-			  Intent notifyIntent = new Intent(this.getApplicationContext(), dashboard.class);
-
-			  PendingIntent intent =
-			  PendingIntent.getActivity(this, 0,notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
-
-			  notifyDetails.setLatestEventInfo(this.getApplicationContext(), contentTitle, contentText, intent);
-
-			  mNotificationManager.notify(SIMPLE_NOTFICATION_ID, notifyDetails);
-	    	}catch(Exception e){
-	    		e.toString();
-	    	}
-		  }	
 	    
 	    
 	    
 	    
 	  
-}
+}//End of share_class

@@ -70,8 +70,6 @@ public class dashboard extends Activity {
         Location last_loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         sharing_class.setLocation(last_loc);
         sharing_class.setAddress(  sharing_class.requestAdress( last_loc.getLatitude() ,last_loc.getLongitude() ) );
-        
-
         	
         InitCounter();//Musi byt volany jako prvni
         
@@ -115,89 +113,7 @@ public class dashboard extends Activity {
               }catch(Exception e){
              	 e.toString();
               }
-            	//TODO
-
-
-            	
-           
-              //Anomace zobrazeni galeri http://udinic.wordpress.com/2011/09/03/expanding-listview-items/
-            	
-            	//Galerie v mape z serveru, tahani fotek z URLs
-              //Galerii v mape z DB, udelat pro ni zvlast akorat jiny adapter
-             // Bug v adapteru pro galerii, nezobrazuji se fotky na aktivnich view
-              
-              //Misto Imageview activity udelat v notes galerii
-              
-              //sepsat dokumentaci
-            	
-            	//Google analytics
-            	//Payment logiku
-            	//Rozchodit in-app payment
-            	//Udelat statistics activity
-            	
-            	//notifikace jako visit US, get PRO
-            	//server
-            	
-            	//Help ktery se zobrazi na zacatku
-            	
-            	//pocet Chicks v listu
-            	//v mape dodelat zobrazeni cisla poctu chicks
-            	//Mapa - po kliknuti na pin, otevrit profil ,pokud je pinu vic (agregace, tak modal okno s Listem)
-            
-            	
-            	
-            	//IN APP****
-            	//In app payment doresit
-            	//In app payment hlasky a button
-            	//Filtr funkci podle stavu zaplaceni app
-            	//pridat paid/notpaid promenou
-            	//notification
-            	//http://developer.android.com/guide/market/billing/billing_integrate.html
-            	
-            	//Pridat iAd (List,Mapa) AZ PO PUBLISH (AdMob.com xkucht04)
-            	
-            	
-            	//BUGS****
-            	//ochrana kdyz naklikas hodne obrazku
-            	
-            
-            	
-            	
-            	
-            	//udelat PHP server
-            	//Rozchodit napojeni na server
-            	
-                //Prijem obrazku podle http://blog.sptechnolab.com/2011/03/09/android/android-upload-image-to-server/
-
-            	
-            	//OPTIMALIZACE****
-            	//try catch
-            	//udelat payment dialog lehce pruhledny
-            	//Prijem chicks - If timestamp is OLD (10 minutes) else return with old jason_class GetData()
-            	//Loading progress for images and map
-            	//Reset button animovat Podle : http://mobile.tutsplus.com/tutorials/android/android-gesture/
-            	//
-            	
-
-            	//STYLE***
-            	//Prechody mezi activitama
-            	//profile vrch
-            	//pismo
-            	//ikonky
-            	//tlacitko mapa
-            
-                //Nejaka hlaska jako uploading chick to server
-            
-            	//Taby nahore resize
-            	//Vybrat vhodny avatar
-            	//prodat kompasek do vsech maps
-            	//Zvuk tlacitek http://www.mybringback.com/tutorial-series/531/android-the-basics-11-button-sound-review-final/
-           
-            	//obrazek zesedly pokud neni zadny v profilu
-            	//Rozsvitit aktivni buttony
-            	//resize
-
-            	//dodelat vsechny TODO v celem solution          	
+                       	
             }  
         });
         
@@ -396,8 +312,6 @@ public void SetCounterDisplayInit(int count){
     	else{
     		strValue = SetCouterValue(count);
     	}
-    	
-    	
     	
     	//NUM 1
     	if(strValue.charAt(0) == '0'){
