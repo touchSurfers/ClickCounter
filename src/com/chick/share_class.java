@@ -37,6 +37,7 @@ import com.billing.util.Base64;
 import com.helpers.data_storage;
 import com.helpers.data_storage_photo;
 import com.helpers.json_class;
+import com.helpers.list_item;
 import com.helpers.user_item;
 
 public class share_class extends Application {
@@ -44,6 +45,7 @@ public class share_class extends Application {
 	
 	//List of lists for History list agregation
 	public LinkedList<LinkedList> chicks_history = new LinkedList<LinkedList>();
+	public LinkedList<list_item> chicks_list = new LinkedList<list_item>();
 	
 	
 	public LinkedList<chicks_server> chicks_server_map = new LinkedList<chicks_server>();
@@ -678,9 +680,27 @@ public String requestAdress(Double latitude, Double longitude){
 	        return null;
 	    }
 	 
+public boolean isSameLocation(Double lat,Double longi, Double lat2, Double longi2){
+	
+	Double distance = distanceTo( lat,longi,lat2,longi2); 
+	if(distance <= 0.05){
+		//under 50m of diference
+		return true;
+	}
+	else{
+		return false;
+	}
+	
+	
+}	    
 	    
-	    
-	    
+	
+public double distanceTo(Double lat,Double longi,Double lat2,Double longi2) {
+	Double radius = 6371.01;
+	return Math.acos(Math.sin(lat) * Math.sin(lat2) +
+			Math.cos(lat) * Math.cos(lat2) *
+			Math.cos(longi - longi2)) * radius;
+}
 	    
 	  
 }//End of share_class

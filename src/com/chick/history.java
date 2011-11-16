@@ -1,6 +1,7 @@
 package com.chick;
 
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.helpers.LazyAdapter;
+import com.helpers.list_item;
 import com.helpers.user_item;
 
 public class history extends Activity {
@@ -43,6 +45,7 @@ public class history extends Activity {
 	        buy_button = (ImageButton)findViewById(R.id.buy_button);
 	        buy_dialog = (ImageView)findViewById(R.id.BuyView1);
 	        
+	        CreateList();
 	        
 	        //Payment logic, show advert
 	        if(sharing_class.isPaid()){
@@ -157,10 +160,61 @@ public class history extends Activity {
 //History list aggregation function
 	 
 	void CreateList(){
+	
+		try{
 		//Get all data from DB
 	    clicks = sharing_class.GetDB();
-		//LinkedList<user_item> clicks;
+	    LinkedList<String> IDs = new LinkedList<String>();
+	
 		//chicks_history	
+	    Double store_lat = 0.0;
+	    Double store_long = 0.0;
+	    user_item this_chick = null; 
+	    boolean change = false;
+	   IDs.clear();
+	   sharing_class.chicks_list.clear();
+	   sharing_class.chicks_history.clear();
+	   
+	   ListIterator<user_item> it = clicks.listIterator(); 
+	   
+	   
+	   while (it.hasNext()) {  
+		   
+          this_chick = it.next(); 
+          change = !sharing_class.isSameLocation(Double.valueOf(this_chick.getLat()),Double.valueOf(this_chick.getLong()),store_lat,store_long);
+          
+          if(change){
+        	  
+        	  if(store_lat!= 0.0){
+        		  sharing_class.chicks_history.add(IDs);
+        		  sharing_class.chicks_list.add(new list_item(this_chick.getAddress(), this_chick.getDate(), String.valueOf(IDs.size()), null));
+        		  IDs.clear();
+        	  }
+        	  else{
+        		  store_lat = Double.valueOf(this_chick.getLat());
+            	  store_long = Double.valueOf(this_chick.getLong());
+            	  IDs.add(this_chick.getId()); 
+        	  }
+          }
+          else{
+        	  store_lat = Double.valueOf(this_chick.getLat());
+        	  store_long = Double.valueOf(this_chick.getLong());
+        	  IDs.add(this_chick.getId());
+          }
+          
+          
+       }  
+		
+		
+		if(sharing_class.chicks_history.size()==0  && this_chick!=null && IDs.size()!=0){
+		  sharing_class.chicks_history.add(IDs);
+  		  sharing_class.chicks_list.add(new list_item(this_chick.getAddress(), this_chick.getDate(), String.valueOf(IDs.size()), null));
+  		  IDs.clear();
+		}
+	   
+		}catch(Exception e){
+		}
+		
 	}
 	 
 }//End class

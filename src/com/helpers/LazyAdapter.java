@@ -17,7 +17,7 @@ import com.chick.share_class;
 
 public class LazyAdapter extends BaseAdapter {
     
-	LinkedList<user_item> clicks;
+	
 	share_class sharing_class;
     private Activity activity;
     //private String[] data;
@@ -38,7 +38,7 @@ public class LazyAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return clicks.size();
+        return sharing_class.chicks_list.size();
     }
 
     public Object getItem(int position) {
@@ -52,7 +52,8 @@ public class LazyAdapter extends BaseAdapter {
     public static class ViewHolder{
         public TextView date;
         public TextView address;
-       // public ImageView image;
+        public TextView num_of_chicks;
+        public ImageView image;
        
     }
 
@@ -64,8 +65,8 @@ public class LazyAdapter extends BaseAdapter {
             holder=new ViewHolder();
             holder.date=(TextView)vi.findViewById(R.id.date_item);
             holder.address=(TextView)vi.findViewById(R.id.address_item);
-            
-           // holder.image=(ImageView)vi.findViewById(R.id.image);
+            holder.num_of_chicks = (TextView)vi.findViewById(R.id.number_item);
+            holder.image=(ImageView)vi.findViewById(R.id.image);
            
             
             vi.setTag(holder);
@@ -74,9 +75,9 @@ public class LazyAdapter extends BaseAdapter {
             holder=(ViewHolder)vi.getTag();
         
        
-        holder.date.setText(clicks.get(position).getDate());
-        holder.address.setText(clicks.get(position).getAddress());
-        
+        holder.date.setText(sharing_class.chicks_list.get(position).getDate());
+        holder.address.setText(sharing_class.chicks_list.get(position).getAddress());
+        holder.num_of_chicks.setText(sharing_class.chicks_list.get(position).getNum());
 
      //   holder.image.setTag(clicks.get(position).getPhoto(1));
      //   imageLoader.DisplayImage(clicks.get(position).getPhoto(1), activity, holder.image);
@@ -87,19 +88,19 @@ public class LazyAdapter extends BaseAdapter {
     
     public void addRow(String newRow) {
         
-    	clicks = sharing_class.GetDB();
+    	//clicks = sharing_class.GetDB();
         notifyDataSetChanged();
     }
     
     public void DeleteRow() {
         
-    	clicks = sharing_class.GetDB();
+    	//clicks = sharing_class.GetDB();
         notifyDataSetChanged();
     }
     
     public void RefreshRow() {
         
-    	clicks = sharing_class.GetDB();
+    	//clicks = sharing_class.GetDB();
         notifyDataSetChanged();
     }
     
@@ -108,7 +109,7 @@ public class LazyAdapter extends BaseAdapter {
        
     	
     	//get data from DB , depending on selecten radiobutton
-    	clicks = sharing_class.GetDB();
+    	//clicks = sharing_class.GetDB();
         notifyDataSetChanged();
     	
     }
