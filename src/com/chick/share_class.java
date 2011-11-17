@@ -38,14 +38,17 @@ import com.helpers.data_storage;
 import com.helpers.data_storage_photo;
 import com.helpers.json_class;
 import com.helpers.list_item;
+import com.helpers.photo_item;
 import com.helpers.user_item;
 
 public class share_class extends Application {
 
 	
 	//List of lists for History list agregation
-	public LinkedList<LinkedList> chicks_history = new LinkedList<LinkedList>();
+	public LinkedList<LinkedList<String>> chicks_history = new LinkedList<LinkedList<String>>();
 	public LinkedList<list_item> chicks_list = new LinkedList<list_item>();
+	public LinkedList<photo_item> chicks_photos = new LinkedList<photo_item>();
+	public LinkedList<String> chicks_helper ;
 	
 	
 	public LinkedList<chicks_server> chicks_server_map = new LinkedList<chicks_server>();
@@ -58,7 +61,7 @@ public class share_class extends Application {
 	}
 	
 	public static final String PREFS_NAME = "chick_data";
-	SharedPreferences settings ;
+	SharedPreferences settings;
 	SharedPreferences.Editor editor;
 	private static final String TAG = "share_class";
 	
@@ -69,8 +72,6 @@ public class share_class extends Application {
 	public Handler mHandler3;
 	
 	//Private variables
-
-
 	
 	private String actual_photo= "";
 	private String actual_selected = "";
@@ -116,7 +117,7 @@ public class share_class extends Application {
 	      InitDB();
 	      InitDB_photo();
 	      sender = new json_class();
-	     
+	  
 	  }
 	  
 	  @Override
@@ -207,9 +208,7 @@ public class share_class extends Application {
 		    return dbMgr_photo.getDB();
 	  }
 	  
-	  public user_item GetItem_photo(String id){
-			return dbMgr_photo.getItem(id);
-	  }
+	  
 	  
 	  
 	  //Store and read payment

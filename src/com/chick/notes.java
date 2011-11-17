@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Random;
 
 import android.app.Activity;
@@ -21,26 +22,26 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.helpers.photo_item;
 import com.helpers.user_item;
 
 public class notes extends Activity {
 	
-	share_class sharing_class;
-	 
+	 share_class sharing_class;
 	
 	 ImageButton camera;
 	 Button map;
      TextView notes_address;
 	 TextView notes_date;
-	 String actual_id;
+	 ImageView photosGallery;
+	 
 	 user_item click;
 	 String new_name;
+	 
 	 Handler m_handler;  
 	 public static int TAKE_IMAGE = 111;
 
@@ -55,29 +56,13 @@ public class notes extends Activity {
        
        notes_address = (TextView ) findViewById(R.id.textView_address);
   	   notes_date = (TextView ) findViewById(R.id.textView_date);
-       
+  	   photosGallery = (ImageView) findViewById(R.id.photosGallery);
        map = (Button)findViewById(R.id.button_map);
-       
-       
        camera = (ImageButton) findViewById(R.id.camera_button);
+       
        sharing_class = ((share_class)getApplicationContext());
        
-       //GET ID
-       actual_id = sharing_class.getChickSelected();
-	       
-	      
-	     
-       //THREAD
-       //Search for click in DB
-       
-       click = sharing_class.GetItem(actual_id);
-       
-	       if(click == null){
-	    	   finish(); //Nic nenalezeno v DB
-	       }
-       
-       //Show data
-       
+     
 	    // our handler
 		   m_handler = new Handler() {
 		     @Override
@@ -89,10 +74,8 @@ public class notes extends Activity {
 		    };
 		    
 	       
-	    view_notes(click);
+	    view_chicks();
        
-	    
-	   
 	    
        //START CAMERA button listener
        camera.setOnClickListener(new View.OnClickListener() {  
@@ -119,49 +102,69 @@ public class notes extends Activity {
         	          	
            }  
        });
-     //START CAMERA button listener
-  
-       /*
-       photo1.setOnClickListener(new View.OnClickListener() {  
-           public void onClick(View v) {  
-          	 
-        	   try{
-        	   if(sharing_class.getPhotoCache(0).length()<1){
-        		   StartCamera();
-        	   }
-        	   else{
-        
-        		   
-        	   Intent i = new Intent().setClass(notes.this, Image_activity.class);
-               startActivity(i);
-	
-        	   }
-        	   }catch(Exception e){
-        		   e.getLocalizedMessage();
-        	   }
-           }  
-       });
-       */
-       
-        
+     
+
         }catch(Exception e){
         	e.getLocalizedMessage();
         }
         
     }
     
+ void view_chicks(){
+	 
+	 try{
+		
+		photo_item photo; 
+    	//Get info about first in IDs
+	    String id = sharing_class.chicks_helper.getFirst();
+	    
+	    user_item first_chick = sharing_class.dbMgr.getItem(id);
+	    
+    	//Show address
+    	notes_address.setText(first_chick.getAddress().toString()) ;
+    	//Show date
+    	notes_date.setText(first_chick.getDate().toString());
+    	
+    	
+    	//Get photos
+    	int siy = sharing_class.chicks_helper.size();
+  	
+    	sharing_class.chicks_photos.clear();
+	         //Ask photo_db for photos of id_this and return list, and add this list to chicks_photo   
+	    sharing_class.chicks_photos = sharing_class.dbMgr_photo.getItems(sharing_class.chicks_helper);
+	     siy = sharing_class.chicks_photos.size();
+	    
+	    if(sharing_class.chicks_photos.size()>0){
+	    	photo = sharing_class.chicks_photos.getLast();
+	    	photosGallery.setImageBitmap(getBitmap(photo.getPhoto()) );
+	    }
+	  
+	    
+    	//sharing_class.chicks_photos is now list of list full of photo_item items
+	 	//Go through this list and show photos
+	 	//generate file paths to gallery list
+	 	   
+	 	   
+	 }catch(Exception e){
+		  finish();
+	 }
+
+    	
+    } 
+ 
+    
     @Override
     public void onDestroy(){
-    	save_notes();
+    	
     	super.onDestroy();
     }
     
     
     @Override
     public void onResume(){
-    	actual_id = sharing_class.getChickSelected();
-    	click = sharing_class.GetItem(actual_id);
-    	view_notes(click);
+    	
+    	
+    	//view_chicks();
     	super.onResume();
     }
     
@@ -204,10 +207,14 @@ public class notes extends Activity {
         	
         	//load image in view
         	
-        	sharing_class.addPhotoCache(sharing_class.getChickPhoto());
+        	//Store image to DB
+        	//Open current chick profile
+        	sharing_class.dbMgr_photo.insert(sharing_class.getChickID(), sharing_class.getChickPhoto(), String.valueOf(System.currentTimeMillis()));
+        	
         	//Start sending image
         	sharing_class.ImageSendThread(sharing_class.getChickPhoto());
-        	view_notes(click);
+        	
+        	view_chicks();
         }
         else{
         	//Image not saved or not captured
@@ -280,27 +287,9 @@ public class notes extends Activity {
         return null;
     }
     
-    void view_notes(user_item click_in){
-    	
-    	
-    	
-    	//Show address
-    	notes_address.setText(click_in.getAddress().toString()) ;
-    	
-    	
-    	//Show date
-    	notes_date.setText(click_in.getDate().toString());
-    	
-
-    	save_notes();
-
-    } 
+   
     
-    void save_notes(){
-    	
-    	sharing_class.UpdateDB(actual_id,click.getAddress(),click.getLat(),click.getLong());
-   	    
-    }
+  
 
     
     Runnable AddressThreadProc = new Runnable() {

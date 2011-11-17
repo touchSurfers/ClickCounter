@@ -1,5 +1,6 @@
 package com.chick;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -76,10 +77,20 @@ public class history extends Activity {
 	        	public void onItemClick(AdapterView<?> a, View v, int position, long id) {
 	        	 
 	        	 try{
+	        		 sharing_class.chicks_helper = sharing_class.chicks_history.get(position);
+	        		/* 
+	        		 Iterator<LinkedList<String>> it = sharing_class.chicks_history.iterator();
+	        		 LinkedList<String> list_item;  
+	        		   while (it.hasNext()) {  
+	        			   
+	        			   list_item  = it.next();
+	        			   sharing_class.chicks_helper = list_item;
+	        			   int siz = sharing_class.chicks_helper.size();
+	        			  
+	  	        		 String idf= sharing_class.chicks_helper.getFirst();
+	        		   }
+	        		  */
 	        		 
-	        		 //TODO Create list of selected Chicks (IDs)
-	        		 sharing_class.setChickSelected(clicks.get(position).getId());
-
 		        	 Intent i = new Intent().setClass(history.this, notes.class);
 		             startActivity(i);
 		             
@@ -90,27 +101,23 @@ public class history extends Activity {
 	       });
 
 	       buy_button.setOnClickListener(new View.OnClickListener() {  
-	            public void onClick(View v) {  
-	              	 
+	            public void onClick(View v) {   	 
 	            	//Start BUY activity
 	            	Intent i = new Intent().setClass(history.this, com.billing.BillingActivity.class);
 	             	startActivity(i);
-	            	
 	            }  
 	        });
 	       
 	       start_map.setOnClickListener(new View.OnClickListener() {  
 	            public void onClick(View v) {  
-	              	 
 	            	//Start map activity
 	            	Intent i = new Intent().setClass(history.this, chicks_map_activity2.class);
 	             	startActivity(i);
-	            	
 	            }  
 	        });
 	       
 	       //Init clicks
-	       clicks = sharing_class.GetDB();
+	       
 	       //Create list of lists
 	       
 	     }catch(Exception e){
@@ -163,55 +170,66 @@ public class history extends Activity {
 	
 		try{
 		//Get all data from DB
-	    clicks = sharing_class.GetDB();
-	    LinkedList<String> IDs = new LinkedList<String>();
-	
+			
+	   LinkedList<String> IDs = new LinkedList<String>();
 		//chicks_history	
 	    Double store_lat = 0.0;
 	    Double store_long = 0.0;
 	    user_item this_chick = null; 
+	    user_item last_chick = null;
 	    boolean change = false;
-	   IDs.clear();
-	   sharing_class.chicks_list.clear();
-	   sharing_class.chicks_history.clear();
+	    IDs.clear();
+	    sharing_class.chicks_list.clear();
+	    sharing_class.chicks_history.clear();
 	   
+	   clicks = sharing_class.GetDB();
 	   ListIterator<user_item> it = clicks.listIterator(); 
-	   
 	   
 	   while (it.hasNext()) {  
 		   
-          this_chick = it.next(); 
+          this_chick = it.next();
+          
+          //Init store location 
+          if(store_lat == 0.0){
+        	  store_lat = Double.valueOf(this_chick.getLat());
+        	  store_long = Double.valueOf(this_chick.getLong());
+        	  last_chick = this_chick;
+          }
+          
           change = !sharing_class.isSameLocation(Double.valueOf(this_chick.getLat()),Double.valueOf(this_chick.getLong()),store_lat,store_long);
           
           if(change){
         	  
-        	  if(store_lat!= 0.0){
-        		  sharing_class.chicks_history.add(IDs);
-        		  sharing_class.chicks_list.add(new list_item(this_chick.getAddress(), this_chick.getDate(), String.valueOf(IDs.size()), null));
-        		  IDs.clear();
-        	  }
-        	  else{
-        		  store_lat = Double.valueOf(this_chick.getLat());
-            	  store_long = Double.valueOf(this_chick.getLong());
-            	  IDs.add(this_chick.getId()); 
-        	  }
+        	  //Store current IDs list
+        	  //sharing_class.chicks_history.add(IDs);
+
+        	  sharing_class.chicks_history.addLast(IDs);
+    		  sharing_class.chicks_list.add(new list_item(last_chick.getAddress(), last_chick.getDate(), String.valueOf(sharing_class.chicks_history.getLast().size()), null));
+    		  
+    		  last_chick = this_chick;
+    		  //start new IDs list
+    		  IDs = new LinkedList<String>();
+    		  IDs.addFirst(this_chick.getId());
+        	  
+    		  store_lat = Double.valueOf(this_chick.getLat());
+    	      store_long = Double.valueOf(this_chick.getLong());
           }
+          
           else{
+        	  
         	  store_lat = Double.valueOf(this_chick.getLat());
-        	  store_long = Double.valueOf(this_chick.getLong());
-        	  IDs.add(this_chick.getId());
+    	      store_long = Double.valueOf(this_chick.getLong());
+    	     
+    	      IDs.addFirst(this_chick.getId());
           }
           
           
-       }  
+       } //while 
 		
-		
-		if(sharing_class.chicks_history.size()==0  && this_chick!=null && IDs.size()!=0){
-		  sharing_class.chicks_history.add(IDs);
-  		  sharing_class.chicks_list.add(new list_item(this_chick.getAddress(), this_chick.getDate(), String.valueOf(IDs.size()), null));
-  		  IDs.clear();
-		}
-	   
+	   //Ulozim posledniho
+   	   sharing_class.chicks_history.addLast(IDs);
+	   sharing_class.chicks_list.add(new list_item(last_chick.getAddress(), last_chick.getDate(), String.valueOf(IDs.size()), null));
+
 		}catch(Exception e){
 		}
 		

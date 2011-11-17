@@ -1,14 +1,24 @@
 package com.chick;
 
+import java.io.File;
+import java.util.LinkedList;
+import java.util.Random;
+
+import com.helpers.list_item;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,6 +35,8 @@ public class dashboard extends Activity {
    		ImageButton chickMap;
    		com.UI.SliderUI slider_button;
    		
+   	 String new_name;
+   	 public static int TAKE_IMAGE = 111;
    		
    		ImageView num_1;
    		ImageView num_2;
@@ -140,10 +152,15 @@ public class dashboard extends Activity {
            	 
             try{
             	//Start notes activity
+            	/*
             	sharing_class.clearPhotoCache();
             	sharing_class.setChickSelected(sharing_class.getChickID());
             	Intent i = new Intent().setClass(dashboard.this, notes.class);
              	startActivity(i);
+             	*/
+            	
+            	StartCamera();
+            	
             }catch(Exception e){
            	 e.toString();
             }
@@ -302,6 +319,81 @@ public class dashboard extends Activity {
     	};
     	
     
+//Camera and profile(notes) intent
+   
+    	public void StartCamera(){
+        	
+        	try {
+        		Random RanNum = new Random();
+    		    new_name = sharing_class.md5(Integer.toString(RanNum.nextInt()));
+    		    new_name = new_name.substring(0,10); 
+    		    new_name = new_name + ".jpg";
+    		    sharing_class.setChickPhoto(new_name);
+    		    
+    		    //kontrola a vytvoreni ChickCounter dir
+    		    File Dir;
+    		    if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
+    	            Dir=new File(android.os.Environment.getExternalStorageDirectory(),"ChickCounter");
+    	            
+    	            if(!Dir.exists()){
+    		        	Dir.mkdirs();
+    		        }
+    		    }
+    		    else{
+    		    	//TODO No SDCARD in phone
+    		    	
+    		    }
+    		    
+        		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        	    File photo = new File(Environment.getExternalStorageDirectory()+"/ChickCounter",  new_name);
+        	    intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(photo));
+        	   
+        	    startActivityForResult(intent, TAKE_IMAGE);
+        	    
+        	} catch (Exception e) {
+        	    Log.e("", "", e);	
+            }
+        }//start camera
+        
+        protected void onActivityResult(int requestCode, int resultCode,Intent intent) {
+            if ((requestCode == TAKE_IMAGE)
+                    && (resultCode == RESULT_OK)) {
+            	
+            
+            	
+            	//Store image to DB
+            	//Open current chick profile
+            	sharing_class.dbMgr_photo.insert(sharing_class.getChickID(), sharing_class.getChickPhoto(), String.valueOf(System.currentTimeMillis()));
+            	
+            	//Start sending image
+            	sharing_class.ImageSendThread(sharing_class.getChickPhoto());
+            	
+            	//start profile activity
+            	LinkedList<String> IDs = new LinkedList<String>();
+            	IDs.add(sharing_class.getChickID());
+            	sharing_class.chicks_helper = IDs;
+            	
+            	Intent i = new Intent().setClass(dashboard.this, notes.class);
+             	startActivity(i);
+             	
+            }
+            else{
+            	//Image not saved or not captured
+            	
+            	//start profile activity with no saved image
+            	LinkedList<String> IDs = new LinkedList<String>();
+            	IDs.add(sharing_class.getChickID());
+            	sharing_class.chicks_helper = IDs;
+            	
+            	Intent i = new Intent().setClass(dashboard.this, notes.class);
+             	startActivity(i);
+            	
+            }
+        }
+    	
+    	
+    	
+    	
 public void SetCounterDisplayInit(int count){
     	
     	String strValue;
@@ -818,6 +910,7 @@ public void SetCounterDisplayInit(int count){
     	
     }
    
+    
     
     
 }

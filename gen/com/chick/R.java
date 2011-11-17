@@ -159,7 +159,7 @@ public final class R {
         public static final int button2=0x7f070004;
         public static final int button_map=0x7f070009;
         public static final int buy_button=0x7f070008;
-        public static final int camera_button=0x7f070025;
+        public static final int camera_button=0x7f070026;
         public static final int chick_add=0x7f070019;
         public static final int chick_list=0x7f07001d;
         public static final int chick_map_button=0x7f07001c;
@@ -185,6 +185,7 @@ public final class R {
         public static final int map=0x7f07001f;
         public static final int notes_added=0x7f070002;
         public static final int number_item=0x7f07000f;
+        public static final int photosGallery=0x7f070025;
         public static final int relativeLayout1=0x7f070013;
         public static final int separator_action=0x7f070024;
         public static final int slider_button=0x7f070012;
