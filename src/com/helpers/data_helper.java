@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class data_helper extends SQLiteOpenHelper {
 
 	 private static final String CLICK_TABLE = "chicks";
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 17;
 
     private String createStatement = "";
     

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Random;
 
 import android.app.Activity;
@@ -19,6 +18,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -49,7 +49,23 @@ public class notes extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.notes);
+        
+        switch (getResources().getDisplayMetrics().densityDpi) {
+        
+        	case DisplayMetrics.DENSITY_MEDIUM:
+        		setContentView(R.layout.notes);
+        		break;
+            
+        	case DisplayMetrics.DENSITY_HIGH:
+        		setContentView(R.layout.notes);
+        		break;
+        	
+        	default:
+        		setContentView(R.layout.notes);
+        		break;      
+        }
+        
+        //setContentView(R.layout.notes);
         
         try{
        
@@ -58,8 +74,8 @@ public class notes extends Activity {
   	   notes_date = (TextView ) findViewById(R.id.textView_date);
   	   photosGallery = (ImageView) findViewById(R.id.photosGallery);
        map = (Button)findViewById(R.id.button_map);
-       camera = (ImageButton) findViewById(R.id.camera_button);
        
+       //camera = (ImageButton) findViewById(R.id.camera_button);
        sharing_class = ((share_class)getApplicationContext());
        
      
@@ -98,12 +114,10 @@ public class notes extends Activity {
         		}catch(Exception e){
          		   e.getLocalizedMessage();
          	   }
-           
-        	          	
+              	
            }  
        });
-     
-
+    
         }catch(Exception e){
         	e.getLocalizedMessage();
         }
@@ -146,8 +160,6 @@ public class notes extends Activity {
 	 }catch(Exception e){
 		  finish();
 	 }
-
-    	
     } 
  
     
@@ -217,7 +229,6 @@ public class notes extends Activity {
         }
         else{
         	//Image not saved or not captured
-        	
         }
     }
     
@@ -225,7 +236,9 @@ public class notes extends Activity {
     {
         //I identify images by hashcode. Not a perfect solution, good for the demo.
         //String filename=String.valueOf(url.hashCode());
-        
+        if(url == ""){
+        	return null;
+        }
     	
         File myDir=new File(android.os.Environment.getExternalStorageDirectory(),"ChickCounter");
         File f=new File(myDir, url);
@@ -233,7 +246,6 @@ public class notes extends Activity {
         //from SD cache
         Bitmap b = decodeFile(f);
         return b;
-
     }
     
   //decodes image and scales it to reduce memory consumption
@@ -246,11 +258,13 @@ public class notes extends Activity {
             BitmapFactory.decodeStream(new FileInputStream(f),null,o);
             
             //Find the correct scale value. It should be the power of 2.
-            final int REQUIRED_SIZE=70;
+            final int h = 480; // height in pixels
+    		final int w = 640; // width in pixels   
+            
             int width_tmp=o.outWidth, height_tmp=o.outHeight;
             int scale=1;
             while(true){
-                if(width_tmp/2<REQUIRED_SIZE || height_tmp/2<REQUIRED_SIZE)
+                if(width_tmp<h || height_tmp<w)
                     break;
                 width_tmp/=2;
                 height_tmp/=2;
@@ -259,9 +273,7 @@ public class notes extends Activity {
             
             try {
 				ExifInterface exif = new ExifInterface(f.getAbsolutePath());
-				
 				orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-				
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -286,11 +298,7 @@ public class notes extends Activity {
         return null;
     }
     
-   
-    
   
-
-    
     Runnable AddressThreadProc = new Runnable() {
         public void run() {
         	

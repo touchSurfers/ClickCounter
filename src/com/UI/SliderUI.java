@@ -47,8 +47,6 @@ public class SliderUI extends View {
 		
 	}
 
-
-
 	/**
 	 * @param context
 	 * @param attrs

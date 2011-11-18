@@ -29,12 +29,13 @@ public class history extends Activity {
 	 share_class sharing_class;
 	 LinkedList<user_item> clicks;
 	 int chicks_showed = 0;
-	 int list_limit = 10;
+	 int list_limit = 500;
 	 //Buy dialog advert
 	 Button start_map;
 	 ImageButton buy_button;
 	 ImageView buy_dialog;
-	 
+	 View footerView;
+	 int db_size = 0;
 	 int paid = 0;
 	 
 
@@ -68,18 +69,11 @@ public class history extends Activity {
 	        list=(ListView)findViewById(R.id.list);
 	        
 	      //add the footer before adding the adapter, else the footer will not load!
-	        View footerView = ((LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.listfooter, null, false);
+	        footerView = ((LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.listfooter, null, false);
 	        list.addFooterView(footerView);
-
+	       
 	        adapter=new LazyAdapter(this,getApplicationContext());
 	        list.setAdapter(adapter);
-	        
-					/*
-			      	sharing_class.setPeriod(1);
-		        	adapter.RefreshRow();
-		        	clicks = sharing_class.GetDB(sharing_class.getPeriod());
-		      		*/
-			
 			
 	        list.setOnItemClickListener(new OnItemClickListener() {
 	        	@Override
@@ -88,7 +82,6 @@ public class history extends Activity {
 	        	 try{
 	        		 sharing_class.chicks_helper = sharing_class.chicks_history.get(position);
 	        		
-	        		 
 		        	 Intent i = new Intent().setClass(history.this, notes.class);
 		             startActivity(i);
 		             
@@ -113,11 +106,12 @@ public class history extends Activity {
 	        		//is the bottom item visible & not loading more already ? Load more !
 	        		
 	        		boolean end_of_list = false;
-	        		int db_size = sharing_class.dbMgr.getDBsize();
+	        		
 	        		
 	        		
 	        		if(chicks_showed >= db_size){
 	        			end_of_list = true;
+	        			list.removeFooterView(footerView);
 	        		}
 	        		else{
 	        			end_of_list = false;
@@ -125,7 +119,7 @@ public class history extends Activity {
 	        		
 	        		if((lastInScreen == totalItemCount) && !end_of_list){
 	        			//load more
-	        			 list_limit += 10;
+	        			 list_limit += 500;
 	        			 CreateList();
 	        			 adapter.RefreshRow();
 	        		}
@@ -175,8 +169,9 @@ public class history extends Activity {
 	    public void onResume()
 	    {
 	       try{
-		    adapter.RefreshRow();
-	        clicks = sharing_class.GetDB(list_limit );
+		   
+		    CreateList();
+		     adapter.RefreshRow();
 	        
 	        if(sharing_class.isPaid()){
 	        	buy_button.setVisibility(View.GONE);
@@ -213,13 +208,16 @@ public class history extends Activity {
 	    boolean change = false;
 	    String photo_list = "";
 	    IDs.clear();
+	    int added = 0;
+	    db_size = sharing_class.dbMgr.getDBsize();
+	    
 	    sharing_class.chicks_list.clear();
 	    sharing_class.chicks_history.clear();
 	   
 	   clicks = sharing_class.GetDB(list_limit);
 	   ListIterator<user_item> it = clicks.listIterator(); 
+	   chicks_showed = 0;
 	   
-	   chicks_showed = clicks.size();
 	   while (it.hasNext()) {  
 		   
           this_chick = it.next();
@@ -237,6 +235,7 @@ public class history extends Activity {
           if(change){
         	  
         	  //Store current IDs list
+        	  
         	  sharing_class.chicks_history.addLast(IDs);
         	  //go through IDs and find first photo
         	  
@@ -244,13 +243,13 @@ public class history extends Activity {
         	  
 		 	  sharing_class.chicks_list.add(new list_item(last_chick.getAddress(), last_chick.getDate(), String.valueOf(sharing_class.chicks_history.getLast().size()), photo_list));
 		 	  photo_list = "";
-    		 
+		 	  added = 0;
     		  last_chick = this_chick;
     		  //start new IDs list
     		  IDs = new LinkedList<String>();
     		  IDs.addFirst(this_chick.getId());
-        	  
-    		  if(this_chick.getPhoto().length()>0){
+    		  chicks_showed++;
+    		  if(this_chick.getPhoto().length()>0 && photo_list == "" ){
         		  photo_list = this_chick.getPhoto();
         	  }
     		  
@@ -264,8 +263,9 @@ public class history extends Activity {
     	      store_long = Double.valueOf(this_chick.getLong());
     	     
     	      IDs.addFirst(this_chick.getId());
+    	      chicks_showed++;
     	      
-	    	      if(this_chick.getPhoto().length()>0){
+	    	      if(this_chick.getPhoto().length()>0 && photo_list == ""){
 	        		  photo_list = this_chick.getPhoto();
 	        	  }
           }

@@ -473,7 +473,7 @@ public void ImageSendThread(String photo_name){
 	        		
 	        		//Resize image
 	        		final int h = 240; // height in pixels
-	        		final int w = 400; // width in pixels    
+	        		final int w = 320; // width in pixels    
 
 	                int width_tmp=b.getWidth(), height_tmp=b.getHeight();
 	                int scale=1;

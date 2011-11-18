@@ -16,14 +16,12 @@
     android:layout_height="282dip"
     android:background="@drawable/front_machine" android:layout_gravity="center_horizontal">
     
-    
-      
     <com.UI.SliderUI
        android:id="@+id/slider_button"
        android:layout_width="55dip"
        android:layout_height="120dip" 
-      
        android:layout_marginLeft="40dip" android:layout_marginTop="122dip"/>
+       
        <RelativeLayout android:layout_height="wrap_content" android:layout_width="wrap_content" android:background="@drawable/display_back" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" android:id="@+id/relativeLayout1">
          
          <RelativeLayout android:layout_height="wrap_content" android:layout_width="wrap_content"   android:layout_centerVertical="true" android:layout_centerHorizontal="true">  
