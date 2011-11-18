@@ -85,7 +85,7 @@ public class share_class extends Application {
 	
 	String send_bitmap;
 	
-	public ArrayList<String> photos_gallery=new ArrayList<String>();
+	public LinkedList<String> photos_gallery=new LinkedList<String>();
 	
 	private String notes_added = "";
 	private LinkedList<String> photo_cache=new LinkedList<String>();

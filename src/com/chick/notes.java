@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ListIterator;
 import java.util.Random;
 
 import android.app.Activity;
@@ -22,10 +23,11 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Gallery;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.helpers.ImageAdapterGalleryNotes;
 import com.helpers.photo_item;
 import com.helpers.user_item;
 
@@ -37,7 +39,8 @@ public class notes extends Activity {
 	 Button map;
      TextView notes_address;
 	 TextView notes_date;
-	 ImageView photosGallery;
+	 Gallery gallery;
+	// ImageView photosGallery;
 	 
 	 user_item click;
 	 String new_name;
@@ -65,14 +68,13 @@ public class notes extends Activity {
         		break;      
         }
         
-        //setContentView(R.layout.notes);
-        
+
         try{
        
        
        notes_address = (TextView ) findViewById(R.id.textView_address);
   	   notes_date = (TextView ) findViewById(R.id.textView_date);
-  	   photosGallery = (ImageView) findViewById(R.id.photosGallery);
+  	   //photosGallery = (ImageView) findViewById(R.id.photosGallery);
        map = (Button)findViewById(R.id.button_map);
        
        //camera = (ImageButton) findViewById(R.id.camera_button);
@@ -92,6 +94,9 @@ public class notes extends Activity {
 	       
 	    view_chicks();
        
+	    gallery = (Gallery) findViewById(R.id.galleryNotes);
+	    gallery.setAdapter(new ImageAdapterGalleryNotes(getApplicationContext(),this));
+	    //gallery.setSelection(1);
 	    
        //START CAMERA button listener
        camera.setOnClickListener(new View.OnClickListener() {  
@@ -147,8 +152,20 @@ public class notes extends Activity {
 	  
 	    dd = sharing_class.chicks_photos.size();
 	    if(sharing_class.chicks_photos.size()>0){
+	    	
+	    	sharing_class.photos_gallery.clear();
 	    	photo = sharing_class.chicks_photos.getLast();
-	    	photosGallery.setImageBitmap(getBitmap(photo.getPhoto()) );
+	    	//go thgourg chicks_photos
+	    	ListIterator<photo_item> it = sharing_class.chicks_photos.listIterator(); 
+	    	
+			 	   while (it.hasNext()) {  
+			 		  sharing_class.photos_gallery.addFirst(it.next().getPhoto());
+			 	   }
+			 	   
+	    }
+	    else{
+	    	//TODO nastav default obrazek do galerie	
+	    	sharing_class.photos_gallery.clear();
 	    }
 	  
 	    

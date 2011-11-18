@@ -33,13 +33,12 @@
 		android:layout_height="13dip"
 		android:background="@drawable/notes_separator" />
 		
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-		android:layout_width="233dip" 
-		android:layout_height="303dip"
-		android:background="@drawable/gallery" android:layout_gravity="center" android:layout_marginTop="20dip">
-        <ImageView android:layout_height="256dip" android:id="@+id/photosGallery" android:layout_width="192dip" android:layout_marginLeft="20dip" android:layout_marginTop="24dip"></ImageView>
-		
-	</LinearLayout>	
+<Gallery xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:id="@+id/galleryNotes"
+    android:layout_width="fill_parent" 
+	android:layout_height="303dip"
+/>
+
+   
   
 </LinearLayout>

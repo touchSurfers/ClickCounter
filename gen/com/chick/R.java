@@ -169,6 +169,7 @@ public final class R {
         public static final int date_item=0x7f070011;
         public static final int drag=0x7f070020;
         public static final int gallery=0x7f070021;
+        public static final int galleryNotes=0x7f070025;
         public static final int image=0x7f07000c;
         public static final int imageView1=0x7f07000a;
         public static final int imageView2=0x7f07000d;
@@ -185,7 +186,7 @@ public final class R {
         public static final int map=0x7f07001f;
         public static final int notes_added=0x7f070002;
         public static final int number_item=0x7f07000f;
-        public static final int photosGallery=0x7f070025;
+        public static final int photosGallery=0x7f070026;
         public static final int relativeLayout1=0x7f070013;
         public static final int separator_action=0x7f070024;
         public static final int slider_button=0x7f070012;
