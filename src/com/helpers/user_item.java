@@ -7,15 +7,17 @@ public class user_item {
 	private String date;
 	private String lat;
 	private String longi;
+	private String photo;
 	private String timestamp;
 	
 	
-	public user_item(String Id,String address,String date,String lat,String longi,String timestamp) {
+	public user_item(String Id,String address,String date,String lat,String longi,String photo2 ,String timestamp) {
 		this.id = Id;
 		this.address = address;
 		this.date = date;
 		this.lat = lat;
 		this.longi = longi;
+		this.photo = photo2;
 		this.timestamp = timestamp;
 	}
 	public void setId(String id) {
@@ -52,6 +54,13 @@ public class user_item {
 	}
 	public String getLong() {
 		return longi;
+	}
+	
+	public void setPhoto(String photo2) {
+		this.photo = photo2;
+	}
+	public String getPhoto() {
+		return this.photo;
 	}
 	
 	public void setTimestamp(String timestamp) {

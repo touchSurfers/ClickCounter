@@ -24,9 +24,6 @@ public class LazyAdapter extends BaseAdapter {
     private static LayoutInflater inflater=null;
     public ImageLoader imageLoader; 
     
-    
-    
-    
     public LazyAdapter(Activity a, Context context) {
         activity = a;
        
@@ -79,10 +76,17 @@ public class LazyAdapter extends BaseAdapter {
         holder.address.setText(sharing_class.chicks_list.get(position).getAddress());
         holder.num_of_chicks.setText(sharing_class.chicks_list.get(position).getNum());
 
-     //   holder.image.setTag(clicks.get(position).getPhoto(1));
-     //   imageLoader.DisplayImage(clicks.get(position).getPhoto(1), activity, holder.image);
-        
-
+    
+        if(sharing_class.chicks_list.get(position).getPhoto().length()>0){
+        	holder.image.setTag(sharing_class.chicks_list.get(position).getPhoto());
+        	imageLoader.DisplayImage(sharing_class.chicks_list.get(position).getPhoto(), activity, holder.image);
+        }
+        else{
+        	holder.image.setTag("");
+        	imageLoader.DisplayImage("", activity, holder.image);
+        }
+    
+    
         return vi;
     }
     

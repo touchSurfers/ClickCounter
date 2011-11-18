@@ -113,27 +113,25 @@ public class notes extends Activity {
  void view_chicks(){
 	 
 	 try{
-		
 		photo_item photo; 
     	//Get info about first in IDs
-	    String id = sharing_class.chicks_helper.getFirst();
+	    String id = sharing_class.chicks_helper.getLast();
 	    
 	    user_item first_chick = sharing_class.dbMgr.getItem(id);
 	    
     	//Show address
-    	notes_address.setText(first_chick.getAddress().toString()) ;
+    	notes_address.setText(first_chick.getAddress().toString());
     	//Show date
     	notes_date.setText(first_chick.getDate().toString());
     	
-    	
     	//Get photos
-    	int siy = sharing_class.chicks_helper.size();
-  	
+    
     	sharing_class.chicks_photos.clear();
-	         //Ask photo_db for photos of id_this and return list, and add this list to chicks_photo   
+	         //Ask photo_db for photos of id_this and return list, and add this list to chicks_photo  
+    	  int dd = sharing_class.chicks_helper.size();
 	    sharing_class.chicks_photos = sharing_class.dbMgr_photo.getItems(sharing_class.chicks_helper);
-	     siy = sharing_class.chicks_photos.size();
-	    
+	  
+	    dd = sharing_class.chicks_photos.size();
 	    if(sharing_class.chicks_photos.size()>0){
 	    	photo = sharing_class.chicks_photos.getLast();
 	    	photosGallery.setImageBitmap(getBitmap(photo.getPhoto()) );
@@ -205,16 +203,17 @@ public class notes extends Activity {
         if ((requestCode == TAKE_IMAGE)
                 && (resultCode == RESULT_OK)) {
         	
-        	//load image in view
+        try{
+        	sharing_class.dbMgr_photo.insert(sharing_class.chicks_helper.getLast(), sharing_class.getChickPhoto(), String.valueOf(System.currentTimeMillis()));
         	
-        	//Store image to DB
-        	//Open current chick profile
-        	sharing_class.dbMgr_photo.insert(sharing_class.getChickID(), sharing_class.getChickPhoto(), String.valueOf(System.currentTimeMillis()));
+        	sharing_class.UpdateDB_photo(sharing_class.chicks_helper.getLast(), sharing_class.getChickPhoto());
         	
         	//Start sending image
         	sharing_class.ImageSendThread(sharing_class.getChickPhoto());
         	
         	view_chicks();
+        }catch(Exception e){}
+        
         }
         else{
         	//Image not saved or not captured

@@ -278,7 +278,6 @@ public class dashboard extends Activity {
 		public void onProviderDisabled(String provider) {
 			//Provider disabled by the user. GPS or WIFI turned off	
 			//CheckProvider();
-			
 		}
 
 		@Override
@@ -341,9 +340,7 @@ public class dashboard extends Activity {
     		    }
     		    else{
     		    	//TODO No SDCARD in phone
-    		    	
     		    }
-    		    
         		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
         	    File photo = new File(Environment.getExternalStorageDirectory()+"/ChickCounter",  new_name);
         	    intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(photo));
@@ -359,12 +356,12 @@ public class dashboard extends Activity {
             if ((requestCode == TAKE_IMAGE)
                     && (resultCode == RESULT_OK)) {
             	
-            
-            	
             	//Store image to DB
             	//Open current chick profile
             	sharing_class.dbMgr_photo.insert(sharing_class.getChickID(), sharing_class.getChickPhoto(), String.valueOf(System.currentTimeMillis()));
             	
+            	sharing_class.UpdateDB_photo(sharing_class.getChickID(), sharing_class.getChickPhoto());
+                
             	//Start sending image
             	sharing_class.ImageSendThread(sharing_class.getChickPhoto());
             	
@@ -373,13 +370,14 @@ public class dashboard extends Activity {
             	IDs.add(sharing_class.getChickID());
             	sharing_class.chicks_helper = IDs;
             	
+            	sharing_class.UpdateDB_photo(sharing_class.getChickID(), sharing_class.getChickPhoto());
+            	
             	Intent i = new Intent().setClass(dashboard.this, notes.class);
              	startActivity(i);
              	
             }
             else{
             	//Image not saved or not captured
-            	
             	//start profile activity with no saved image
             	LinkedList<String> IDs = new LinkedList<String>();
             	IDs.add(sharing_class.getChickID());
@@ -390,8 +388,6 @@ public class dashboard extends Activity {
             	
             }
         }
-    	
-    	
     	
     	
 public void SetCounterDisplayInit(int count){

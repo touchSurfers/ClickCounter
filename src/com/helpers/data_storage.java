@@ -19,15 +19,17 @@ public class data_storage {
     private static final String CLICK_DATE = "click_date";
     private static final String CLICK_LAT = "click_lat";
     private static final String CLICK_LONG = "click_long";
+    private static final String CLICK_PHOTO = "photo";
     private static final String CLICK_TIMESTAMP = "click_timestamp";
     private static final String ORDER_DESC =" ORDER BY CLICK_TIMESTAMP DESC";
     
+    private static final String LIMIT = " LIMIT ";
 
    // private static final String SELECT_CLICKS = "SELECT * FROM " + CLICK_TABLE + " WHERE CLICK_TIMESTAMP > ";
     private static final String SELECT_CLICKS = "SELECT * FROM " + CLICK_TABLE;
    
     public  data_storage(Context context) {
-        dbHelper = new data_helper(context, CLICK_TABLE, CLICK_ID + " TEXT,"  + CLICK_ADDRESS + " TEXT," + CLICK_DATE + " TEXT,"  + CLICK_LAT + " TEXT," + CLICK_LONG + " TEXT," + CLICK_TIMESTAMP + " TEXT");
+        dbHelper = new data_helper(context, CLICK_TABLE, CLICK_ID + " TEXT,"  + CLICK_ADDRESS + " TEXT," + CLICK_DATE + " TEXT,"  + CLICK_LAT + " TEXT," + CLICK_LONG + " TEXT," + CLICK_PHOTO + " TEXT," + CLICK_TIMESTAMP + " TEXT");
     }
 
     /**
@@ -36,7 +38,7 @@ public class data_storage {
      * @param stockDesc description of the stock
      * @return success or fail
      */
-    public boolean insert(String Id, String address,String date,String lat,String longi,String timestamp) {
+    public boolean insert(String Id, String address,String date,String lat,String longi,String photo,String timestamp) {
         try {
             SQLiteDatabase sqlite = dbHelper.getWritableDatabase();
             ContentValues initialValues = new ContentValues();
@@ -46,6 +48,7 @@ public class data_storage {
             initialValues.put(CLICK_DATE, date);
             initialValues.put(CLICK_LAT, lat);
             initialValues.put(CLICK_LONG, longi);
+            initialValues.put(CLICK_PHOTO, photo);
             initialValues.put(CLICK_TIMESTAMP, timestamp);
             
             sqlite.insert(CLICK_TABLE, null, initialValues);
@@ -65,24 +68,15 @@ public class data_storage {
      * Get all available clicks
      * @return List of stocks
      */
-    public LinkedList<user_item> getDB() {
+    public LinkedList<user_item> getDB(int limit) {
         LinkedList<user_item> clicks = new LinkedList<user_item>();
 
         SQLiteDatabase sqliteDB = dbHelper.getReadableDatabase();
         String query = "";
         
-        String timestamp_day = "";
-    	String timestamp_week = "";
-	    long dtMili = System.currentTimeMillis();
-	    dtMili = dtMili/1000;
-	    
-	    long dtMili_day = dtMili - 86400;
-	    long dtMili_week = dtMili - 604800;
-	    
-	    timestamp_day = Long.toString(dtMili_day);
-	    timestamp_week = Long.toString(dtMili_week);
+      
         
-        query = SELECT_CLICKS + ORDER_DESC;
+        query = SELECT_CLICKS + ORDER_DESC + LIMIT + String.valueOf(limit);
 
         Cursor crsr = sqliteDB.rawQuery(query, null);
 
@@ -90,12 +84,24 @@ public class data_storage {
 
         for (int i = 0; i < crsr.getCount(); i++)
         {
-        	clicks.add(new user_item(crsr.getString(0), crsr.getString(1), crsr.getString(2),crsr.getString(3),crsr.getString(4),crsr.getString(5)));
+        	clicks.add(new user_item(crsr.getString(0), crsr.getString(1), crsr.getString(2),crsr.getString(3),crsr.getString(4),crsr.getString(5),crsr.getString(6)));
 
             crsr.moveToNext();
         }
 
         return clicks;
+    }
+    
+    public int getDBsize() {
+        
+        SQLiteDatabase sqliteDB = dbHelper.getReadableDatabase();
+        String query = "";
+
+        query = SELECT_CLICKS + ORDER_DESC ;
+
+        Cursor crsr = sqliteDB.rawQuery(query, null);
+        return crsr.getCount();
+        
     }
     
     public user_item getItem(String id) {
@@ -109,7 +115,7 @@ public class data_storage {
 
         crsr.moveToFirst();
 
-        click = new user_item(crsr.getString(0), crsr.getString(1), crsr.getString(2),crsr.getString(3),crsr.getString(4),crsr.getString(5));
+        click = new user_item(crsr.getString(0), crsr.getString(1), crsr.getString(2),crsr.getString(3),crsr.getString(4),crsr.getString(5),crsr.getString(6));
 
     	}catch(Exception e){
     		click = null;
@@ -117,7 +123,26 @@ public class data_storage {
         return click;
     }
     
-    public void update(String id, String address, String lat, String longi){
+    public void update_photo(String id, String photo){
+    	
+    	SQLiteDatabase sqlite = dbHelper.getWritableDatabase();
+
+        ContentValues initialValues = new ContentValues();
+      // initialValues.put(CLICK_ADDRESS, address);    
+      // initialValues.put(CLICK_LAT, lat);
+      // initialValues.put(CLICK_LONG, longi);
+       
+       initialValues.put(CLICK_PHOTO, photo);
+       
+        try{
+        	int i= sqlite.update(CLICK_TABLE, initialValues, "click_id=?", new String[]{id}); 
+        }catch(Exception e){
+        	e.getLocalizedMessage();
+        }
+        
+    }
+    
+public void update(String id,String address, String lat, String longi){
     	
     	SQLiteDatabase sqlite = dbHelper.getWritableDatabase();
 

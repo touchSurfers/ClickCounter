@@ -148,18 +148,23 @@ public class share_class extends Application {
 	  public void DeleteItem(String id){
 		  dbMgr.delete(id);
 	  }
-	  public void InsertDB(String id,String address,String date,String lat,String longi,String timestamp){
+	  public void InsertDB(String id,String address,String date,String lat,String longi,String photo,String timestamp){
 		  if(dbMgr != null)
-		  dbMgr.insert(id,address,date,lat,longi,timestamp); 
+		  dbMgr.insert(id,address,date,lat,longi,photo,timestamp); 
 	  }
 	  
       public void UpdateDB(String id,String address,String lat, String longi){  
 		  if(dbMgr != null)
 		  dbMgr.update(id, address,lat,longi);  
 	  }
+      
+      public void UpdateDB_photo(String id,String photo){  
+		  if(dbMgr != null)
+		  dbMgr.update_photo(id, photo);  
+	  }
 	  
-	  public LinkedList<user_item> GetDB(){
-		    return dbMgr.getDB();
+	  public LinkedList<user_item> GetDB(int limit){
+		    return dbMgr.getDB(limit);
 	  }
 	  
 	  public user_item GetItem(String id){
@@ -204,10 +209,11 @@ public class share_class extends Application {
 		  dbMgr_photo.insert(id,photo,timestamp); 
 	  }
 
+	  /*
 	  public LinkedList<user_item> GetDB_photo(){
 		    return dbMgr_photo.getDB();
 	  }
-	  
+	  */
 	  
 	  
 	  
@@ -415,7 +421,7 @@ public class share_class extends Application {
         		    }catch(Exception e){
         		    	
         		    }
-        		    InsertDB(ID,"",date,lat,longi,timestamp_s);
+        		    InsertDB(ID,"",date,lat,longi,"",timestamp_s);
         		   
         		    //String address = requestAdress(getLocation().getLatitude(),getLocation().getLongitude());
          		   	String address = getAddress();

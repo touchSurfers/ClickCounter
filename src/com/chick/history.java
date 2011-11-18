@@ -1,13 +1,16 @@
 package com.chick;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -25,7 +28,8 @@ public class history extends Activity {
 	 LazyAdapter adapter;
 	 share_class sharing_class;
 	 LinkedList<user_item> clicks;
-	 
+	 int chicks_showed = 0;
+	 int list_limit = 10;
 	 //Buy dialog advert
 	 Button start_map;
 	 ImageButton buy_button;
@@ -62,6 +66,11 @@ public class history extends Activity {
 	        
 	        //Set list view adapter
 	        list=(ListView)findViewById(R.id.list);
+	        
+	      //add the footer before adding the adapter, else the footer will not load!
+	        View footerView = ((LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.listfooter, null, false);
+	        list.addFooterView(footerView);
+
 	        adapter=new LazyAdapter(this,getApplicationContext());
 	        list.setAdapter(adapter);
 	        
@@ -78,18 +87,7 @@ public class history extends Activity {
 	        	 
 	        	 try{
 	        		 sharing_class.chicks_helper = sharing_class.chicks_history.get(position);
-	        		/* 
-	        		 Iterator<LinkedList<String>> it = sharing_class.chicks_history.iterator();
-	        		 LinkedList<String> list_item;  
-	        		   while (it.hasNext()) {  
-	        			   
-	        			   list_item  = it.next();
-	        			   sharing_class.chicks_helper = list_item;
-	        			   int siz = sharing_class.chicks_helper.size();
-	        			  
-	  	        		 String idf= sharing_class.chicks_helper.getFirst();
-	        		   }
-	        		  */
+	        		
 	        		 
 		        	 Intent i = new Intent().setClass(history.this, notes.class);
 		             startActivity(i);
@@ -99,6 +97,41 @@ public class history extends Activity {
 	        	 }
 	        }
 	       });
+	      
+	        list.setOnScrollListener(new OnScrollListener(){
+
+	        	@Override
+	        	public void onScrollStateChanged(AbsListView view, int scrollState) {}
+
+	        	@Override
+	        	public void onScroll(AbsListView view, int firstVisibleItem,
+	        		int visibleItemCount, int totalItemCount) {
+
+	        		//what is the bottom iten that is visible
+	        		int lastInScreen = firstVisibleItem + visibleItemCount;				
+
+	        		//is the bottom item visible & not loading more already ? Load more !
+	        		
+	        		boolean end_of_list = false;
+	        		int db_size = sharing_class.dbMgr.getDBsize();
+	        		
+	        		
+	        		if(chicks_showed >= db_size){
+	        			end_of_list = true;
+	        		}
+	        		else{
+	        			end_of_list = false;
+	        		}
+	        		
+	        		if((lastInScreen == totalItemCount) && !end_of_list){
+	        			//load more
+	        			 list_limit += 10;
+	        			 CreateList();
+	        			 adapter.RefreshRow();
+	        		}
+	        		
+	        	}
+	        });
 
 	       buy_button.setOnClickListener(new View.OnClickListener() {  
 	            public void onClick(View v) {   	 
@@ -143,7 +176,7 @@ public class history extends Activity {
 	    {
 	       try{
 		    adapter.RefreshRow();
-	        clicks = sharing_class.GetDB();
+	        clicks = sharing_class.GetDB(list_limit );
 	        
 	        if(sharing_class.isPaid()){
 	        	buy_button.setVisibility(View.GONE);
@@ -178,13 +211,15 @@ public class history extends Activity {
 	    user_item this_chick = null; 
 	    user_item last_chick = null;
 	    boolean change = false;
+	    String photo_list = "";
 	    IDs.clear();
 	    sharing_class.chicks_list.clear();
 	    sharing_class.chicks_history.clear();
 	   
-	   clicks = sharing_class.GetDB();
+	   clicks = sharing_class.GetDB(list_limit);
 	   ListIterator<user_item> it = clicks.listIterator(); 
 	   
+	   chicks_showed = clicks.size();
 	   while (it.hasNext()) {  
 		   
           this_chick = it.next();
@@ -193,7 +228,8 @@ public class history extends Activity {
           if(store_lat == 0.0){
         	  store_lat = Double.valueOf(this_chick.getLat());
         	  store_long = Double.valueOf(this_chick.getLong());
-        	  last_chick = this_chick;
+        	  last_chick = this_chick;  
+        	  photo_list = "";
           }
           
           change = !sharing_class.isSameLocation(Double.valueOf(this_chick.getLat()),Double.valueOf(this_chick.getLong()),store_lat,store_long);
@@ -201,16 +237,23 @@ public class history extends Activity {
           if(change){
         	  
         	  //Store current IDs list
-        	  //sharing_class.chicks_history.add(IDs);
-
         	  sharing_class.chicks_history.addLast(IDs);
-    		  sharing_class.chicks_list.add(new list_item(last_chick.getAddress(), last_chick.getDate(), String.valueOf(sharing_class.chicks_history.getLast().size()), null));
-    		  
+        	  //go through IDs and find first photo
+        	  
+        	  //Get photos from IDs 
+        	  
+		 	  sharing_class.chicks_list.add(new list_item(last_chick.getAddress(), last_chick.getDate(), String.valueOf(sharing_class.chicks_history.getLast().size()), photo_list));
+		 	  photo_list = "";
+    		 
     		  last_chick = this_chick;
     		  //start new IDs list
     		  IDs = new LinkedList<String>();
     		  IDs.addFirst(this_chick.getId());
         	  
+    		  if(this_chick.getPhoto().length()>0){
+        		  photo_list = this_chick.getPhoto();
+        	  }
+    		  
     		  store_lat = Double.valueOf(this_chick.getLat());
     	      store_long = Double.valueOf(this_chick.getLong());
           }
@@ -221,18 +264,24 @@ public class history extends Activity {
     	      store_long = Double.valueOf(this_chick.getLong());
     	     
     	      IDs.addFirst(this_chick.getId());
+    	      
+	    	      if(this_chick.getPhoto().length()>0){
+	        		  photo_list = this_chick.getPhoto();
+	        	  }
           }
-          
-          
+               
        } //while 
 		
 	   //Ulozim posledniho
    	   sharing_class.chicks_history.addLast(IDs);
-	   sharing_class.chicks_list.add(new list_item(last_chick.getAddress(), last_chick.getDate(), String.valueOf(IDs.size()), null));
+	   sharing_class.chicks_list.add(new list_item(last_chick.getAddress(), last_chick.getDate(), String.valueOf(IDs.size()), photo_list));
 
 		}catch(Exception e){
+			String ee = e.toString();
 		}
 		
 	}
+	
+	
 	 
 }//End class
